@@ -1,0 +1,96 @@
+{
+  "name": "devto-cli",
+  "version": "0.1.0",
+  "description": "Authoring CLI to publish markdown files on dev.to platform, using assets hosted on GitHub.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sinedied/devto-cli.git"
+  },
+  "private": true,
+  "main": "dist/index.js",
+  "bin": {
+    "devto": "./bin/devto.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "start:dev": "node --inspect-brk=9229 -r ts-node/register index.ts",
+    "build": "tsc",
+    "lint": "xo",
+    "lint:fix": "xo --fix",
+    "test": "xo && jest",
+    "clean": "rm -rf *.js *.d.ts *.tgz"
+  },
+  "keywords": [
+    "cli",
+    "authoring",
+    "dev.to",
+    "publish",
+    "markdown",
+    "assets",
+    "articles",
+    "sync"
+  ],
+  "author": {
+    "name": "Yohan Lasorsa",
+    "url": "https://twitter.com/sinedied"
+  },
+  "homepage": "https://github.com/sinedied/devto-cli",
+  "bugs": {
+    "url": "https://github.com/sinedied/devto-cli/issues"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "dotenv": "^8.2.0",
+    "find-up": "^4.1.0",
+    "fs-extra": "^9.0.0",
+    "globby": "^11.0.0",
+    "got": "^10.7.0",
+    "gray-matter": "^4.0.2",
+    "minimist": "^1.2.5",
+    "p-map": "^4.0.0",
+    "p-throttle": "^3.1.0",
+    "table": "^5.4.6"
+  },
+  "devDependencies": {
+    "jest": "^25.2.4",
+    "xo": "^0.28.1"
+  },
+  "xo": {
+    "space": true,
+    "prettier": true,
+    "envs": [
+      "node",
+      "jest"
+    ],
+    "rules": {
+      "camelcase": [
+        "error",
+        {
+          "allow": [
+            "body_markdown",
+            "cover_image",
+            "published_at"
+          ]
+        }
+      ]
+    },
+    "ignores": [
+      "test/mocks/**/*"
+    ]
+  },
+  "prettier": {
+    "bracketSpacing": true
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "*.js",
+      "lib/**/*.js"
+    ],
+    "verbose": true
+  },
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=6.0.0"
+  }
+}
