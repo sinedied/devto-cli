@@ -58,7 +58,7 @@ function run(args) {
   switch (command) {
     case 'i':
     case 'init':
-      return init();
+      return init(options.token);
     case 'n':
     case 'new':
       return createNew();
