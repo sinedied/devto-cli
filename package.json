@@ -7,7 +7,7 @@
     "url": "https://github.com/sinedied/devto-cli.git"
   },
   "private": true,
-  "main": "dist/index.js",
+  "main": "devto-cli.js",
   "bin": {
     "devto": "./bin/devto.js"
   },
@@ -92,5 +92,11 @@
   "engines": {
     "node": ">=12.0.0",
     "npm": ">=6.0.0"
-  }
+  },
+  "files": [
+    "bin",
+    "lib",
+    "template",
+    "devto-cli.js"
+  ]
 }
