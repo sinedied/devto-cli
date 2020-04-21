@@ -20,6 +20,7 @@ Commands:
 
 General options:
   -t, --token <token> Use this dev.to API token
+  -r, --repo <repo>   GitHub repository (in "user/repo" form)
   -v, --version       Show version
   --help              Show this help
 `;
@@ -28,7 +29,7 @@ function run(args) {
   const options = minimist(args, {
     number: ['number', 'depth'],
     string: ['token'],
-    boolean: ['help', 'version', 'reconcile', 'check-img', 'json'],
+    boolean: ['help', 'version', 'reconcile', 'check-img', 'json', 'pull'],
     alias: {
       r: 'reconcile',
       d: 'dry-run',
@@ -36,7 +37,8 @@ function run(args) {
       n: 'number',
       t: 'token',
       v: 'version',
-      j: 'json'
+      j: 'json',
+      p: 'pull'
     }
   });
 
@@ -58,7 +60,7 @@ function run(args) {
   switch (command) {
     case 'i':
     case 'init':
-      return init(options.token);
+      return init(options.token, options.pull);
     case 'n':
     case 'new':
       return createNew();
@@ -66,6 +68,7 @@ function run(args) {
     case 'publish':
       return publish(parameters, {
         devtoKey: options.token,
+        repo: options.repo,
         dryRun: options.dryRun,
         reconcile: options.reconcile,
         checkImages: options['check-img']
