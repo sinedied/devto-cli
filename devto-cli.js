@@ -9,7 +9,7 @@ Commands:
     -p, --pull        Pull your articles from dev.to
   n, new <file>       Create new article
   p, publish [files]  Publish articles to dev.to [default: posts/**/*.md]
-    -r, --reconcile   Reconcile articles without id using their title
+    -e, --reconcile   Reconcile articles without id using their title
     -c, --check-img   Check all images to be online before publishing
     -d, --dry-run     Do not make actual changes on dev.to
   u, pull [files]     Pull updates from dev.to   [default: posts/**/*.md]
@@ -28,17 +28,18 @@ General options:
 function run(args) {
   const options = minimist(args, {
     number: ['number', 'depth'],
-    string: ['token'],
+    string: ['token', 'repo'],
     boolean: ['help', 'version', 'reconcile', 'check-img', 'json', 'pull'],
     alias: {
-      r: 'reconcile',
+      e: 'reconcile',
       d: 'dry-run',
       c: 'check-img',
       n: 'number',
       t: 'token',
       v: 'version',
       j: 'json',
-      p: 'pull'
+      p: 'pull',
+      r: 'repo'
     }
   });
 
@@ -60,7 +61,11 @@ function run(args) {
   switch (command) {
     case 'i':
     case 'init':
-      return init(options.token, options.pull);
+      return init({
+        devtoKey: options.token,
+        repo: options.repo,
+        pull: options.pull
+      });
     case 'n':
     case 'new':
       return createNew();
