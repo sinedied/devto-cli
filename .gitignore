@@ -1,6 +1,5 @@
 node_modules/
 .vscode/
-template/
 *.log
 coverage/
 *.tgz

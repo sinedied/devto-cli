@@ -1,0 +1,38 @@
+# This workflow will publish or update articles on dev.to each time a new
+# commit is pushed to the master branch.
+#
+# To make it work, you need:
+# - A dev.to API key, see: https://docs.dev.to/api/#section/Authentication/api_key
+# - A GitHub personal access token with the **repo** permission checked, see:
+#   https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
+#
+# Once you have generated the tokens, you need to add them as secrets in your
+# GitHub repository:
+# - DEVTO_TOKEN: your dev.to API key
+# - GH_TOKEN: your GitHub personal access token
+# See https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets#creating-encrypted-secrets
+# for more information about GitHub secrets.
+
+name: publish
+on:
+  push:
+    branches: [master]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12
+
+    - name: Publish articles on dev.to
+      uses: sinedied/publish-devto@v1
+      with:
+        repository: USERNAME/REPO
+        files_glob: 'posts/**/*.md'
+        devto_key: ${{ secrets.DEVTO_TOKEN }}
+        github_token: ${{ secrets.GH_TOKEN }}
+        conventional_commits: false
