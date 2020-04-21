@@ -1,10 +1,6 @@
-const {
-  convertPathToPosix,
-  parseRepository,
-  getRepositoryFromPackage,
-  updateImagesUrls,
-  scaleNumber
-} = require('../lib/util');
+const { convertPathToPosix, updateImagesUrls, scaleNumber, replaceInFile } = require('../lib/util');
+
+jest.mock('fs-extra');
 
 describe('utilities', () => {
   describe('convertPathToPosix', () => {
@@ -14,36 +10,6 @@ describe('utilities', () => {
 
     it('should not change a posix path', () => {
       expect(convertPathToPosix('./posix/path')).toEqual('./posix/path');
-    });
-  });
-
-  describe('parseRepository', () => {
-    it('should return null', () => {
-      expect(parseRepository()).toBe(null);
-      expect(parseRepository('not-a-repo')).toBe(null);
-    });
-
-    it('should parse full repo', () => {
-      expect(parseRepository('https://github.com/sinedied/devto-cli.git')).toEqual({
-        user: 'sinedied',
-        name: 'devto-cli'
-      });
-    });
-
-    it('should parse shorthand repo', () => {
-      expect(parseRepository('sinedied/devto-cli')).toEqual({ user: 'sinedied', name: 'devto-cli' });
-    });
-  });
-
-  describe('getRepositoryFromPackage', () => {
-    it('should get repo from same dir', async () => {
-      expect(await getRepositoryFromPackage()).toEqual({ user: 'sinedied', name: 'devto-cli' });
-    });
-
-    it('should get repo from child dir', async () => {
-      process.chdir('test');
-      expect(await getRepositoryFromPackage()).toEqual({ user: 'sinedied', name: 'devto-cli' });
-      process.chdir('..');
     });
   });
 
@@ -108,6 +74,16 @@ describe('utilities', () => {
 
     it('should scale to K and round number with specified length', () => {
       expect(scaleNumber(12365, 6)).toEqual('12.37K');
+    });
+  });
+
+  describe('replaceInFile', () => {
+    it('should replace string in file', async () => {
+      const fs = require('fs-extra');
+      fs.readFile.mockImplementation(async () => 'Lorem ipsum dolor sit amet');
+      await replaceInFile('dummy.md', 'ipsum', 'replaced');
+
+      expect(fs.writeFile).toHaveBeenCalledWith('dummy.md', 'Lorem replaced dolor sit amet');
     });
   });
 });
