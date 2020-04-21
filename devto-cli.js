@@ -75,7 +75,11 @@ function run(args) {
       });
     case 's':
     case 'stats':
-      return showStats(options.token, options.number, options.json);
+      return showStats({
+        devtoKey: options.token,
+        number: options.number,
+        json: options.json
+      });
     default:
       return console.log(help);
   }
