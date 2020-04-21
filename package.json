@@ -71,7 +71,8 @@
           "allow": [
             "body_markdown",
             "cover_image",
-            "published_at"
+            "published_at",
+            "canonical_url"
           ]
         }
       ]
