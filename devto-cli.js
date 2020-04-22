@@ -1,6 +1,6 @@
 const minimist = require('minimist');
 const dotenv = require('dotenv');
-const { init, createNew, publish, showStats } = require('./lib/commands');
+const { init, createNew, publish, pullUpdates, showStats } = require('./lib/commands');
 
 const help = `Usage: devto <init|new|publish|pull|stats> [options]
 
@@ -9,11 +9,11 @@ Commands:
     -p, --pull        Pull your articles from dev.to
   n, new <file>       Create new article
   p, publish [files]  Publish articles to dev.to [default: posts/**/*.md]
-    -e, --reconcile   Reconcile articles without id using their title
     -c, --check-img   Check all images to be online before publishing
     -d, --dry-run     Do not make actual changes on dev.to
+    -e, --reconcile   Reconcile articles without id using their title
   u, pull [files]     Pull updates from dev.to   [default: posts/**/*.md]
-    -r, --reconcile   Reconcile articles without id using their title
+    -e, --reconcile   Reconcile articles without id using their title
   s, stats            Display stats for your latest published articles
     -n, --number <n>  Number of articles to list stats for [default: 10]
     -j, --json        Format result as JSON
@@ -29,7 +29,7 @@ function run(args) {
   const options = minimist(args, {
     number: ['number', 'depth'],
     string: ['token', 'repo'],
-    boolean: ['help', 'version', 'reconcile', 'check-img', 'json', 'pull'],
+    boolean: ['help', 'version', 'reconcile', 'check-img', 'json', 'pull', 'verbose'],
     alias: {
       e: 'reconcile',
       d: 'dry-run',
@@ -77,6 +77,13 @@ function run(args) {
         dryRun: options.dryRun,
         reconcile: options.reconcile,
         checkImages: options['check-img']
+      });
+    case 'u':
+    case 'pull':
+      return pullUpdates({
+        devtoKey: options.token,
+        repo: options.repo,
+        reconcile: options.reconcile
       });
     case 's':
     case 'stats':
