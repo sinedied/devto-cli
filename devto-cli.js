@@ -25,7 +25,7 @@ General options:
   --help              Show this help
 `;
 
-function run(args) {
+async function run(args) {
   const options = minimist(args, {
     number: ['number', 'depth'],
     string: ['token', 'repo'],
@@ -68,19 +68,19 @@ function run(args) {
       });
     case 'n':
     case 'new':
-      return createNew();
+      return createNew(parameters[0]);
     case 'p':
     case 'publish':
       return publish(parameters, {
         devtoKey: options.token,
         repo: options.repo,
-        dryRun: options.dryRun,
+        dryRun: options['dry-run'],
         reconcile: options.reconcile,
         checkImages: options['check-img']
       });
     case 'u':
     case 'pull':
-      return pullUpdates({
+      return pullUpdates(parameters, {
         devtoKey: options.token,
         repo: options.repo,
         reconcile: options.reconcile

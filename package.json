@@ -18,6 +18,7 @@
     "lint": "xo",
     "lint:fix": "xo --fix",
     "test": "xo && jest",
+    "test:unit": "jest",
     "clean": "rm -rf *.js *.d.ts *.tgz"
   },
   "keywords": [
