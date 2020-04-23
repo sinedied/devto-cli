@@ -36,11 +36,12 @@ describe('devto CLI', () => {
 
   it('should run init command', async () => {
     const { init } = require('../lib/commands');
-    await run(['init', '--token=123', '--repo=git/repo', '--pull']);
+    await run(['init', '--token=123', '--repo=git/repo', '--pull', '--skip-git']);
     expect(init).toHaveBeenCalledWith({
       devtoKey: '123',
       repo: 'git/repo',
-      pull: true
+      pull: true,
+      skipGit: true
     });
   });
 

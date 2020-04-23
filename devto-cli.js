@@ -1,3 +1,4 @@
+const debug = require('debug');
 const minimist = require('minimist');
 const dotenv = require('dotenv');
 const { init, createNew, publish, pullUpdates, showStats } = require('./lib/commands');
@@ -7,6 +8,7 @@ const help = `Usage: devto <init|new|publish|pull|stats> [options]
 Commands:
   i, init             Init current dir as an article repository
     -p, --pull        Pull your articles from dev.to
+    -s, --skip-git    Skip git repository init
   n, new <file>       Create new article
   p, publish [files]  Publish articles to dev.to [default: posts/**/*.md]
     -c, --check-img   Check all images to be online before publishing
@@ -29,7 +31,7 @@ async function run(args) {
   const options = minimist(args, {
     number: ['number', 'depth'],
     string: ['token', 'repo'],
-    boolean: ['help', 'version', 'reconcile', 'check-img', 'json', 'pull', 'verbose'],
+    boolean: ['help', 'version', 'reconcile', 'check-img', 'json', 'pull', 'skip-git', 'verbose'],
     alias: {
       e: 'reconcile',
       d: 'dry-run',
@@ -39,7 +41,8 @@ async function run(args) {
       v: 'version',
       j: 'json',
       p: 'pull',
-      r: 'repo'
+      r: 'repo',
+      s: 'skip-git'
     }
   });
 
@@ -50,6 +53,10 @@ async function run(args) {
 
   if (options.help) {
     return console.log(help);
+  }
+
+  if (options.verbose) {
+    debug.enable('*');
   }
 
   if (!options.token) {
@@ -64,7 +71,8 @@ async function run(args) {
       return init({
         devtoKey: options.token,
         repo: options.repo,
-        pull: options.pull
+        pull: options.pull,
+        skipGit: options['skip-git']
       });
     case 'n':
     case 'new':
