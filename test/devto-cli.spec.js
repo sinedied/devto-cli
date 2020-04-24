@@ -45,10 +45,10 @@ describe('devto CLI', () => {
     });
   });
 
-  it('should run publish command', async () => {
-    const { publish } = require('../lib/commands');
-    await run(['publish', 'posts/*.md', '--token=123', '--repo=git/repo', '--dry-run', '--reconcile', '--check-img']);
-    expect(publish).toHaveBeenCalledWith(['posts/*.md'], {
+  it('should run push command', async () => {
+    const { push } = require('../lib/commands');
+    await run(['push', 'posts/*.md', '--token=123', '--repo=git/repo', '--dry-run', '--reconcile', '--check-img']);
+    expect(push).toHaveBeenCalledWith(['posts/*.md'], {
       devtoKey: '123',
       repo: 'git/repo',
       dryRun: true,
@@ -58,9 +58,9 @@ describe('devto CLI', () => {
   });
 
   it('should run pull command', async () => {
-    const { pullUpdates } = require('../lib/commands');
+    const { pull } = require('../lib/commands');
     await run(['pull', 'posts/*.md', '--token=123', '--repo=git/repo', '--reconcile']);
-    expect(pullUpdates).toHaveBeenCalledWith(['posts/*.md'], {
+    expect(pull).toHaveBeenCalledWith(['posts/*.md'], {
       devtoKey: '123',
       repo: 'git/repo',
       reconcile: true

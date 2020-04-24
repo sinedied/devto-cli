@@ -1,24 +1,24 @@
 const debug = require('debug');
 const minimist = require('minimist');
 const dotenv = require('dotenv');
-const { init, createNew, publish, pullUpdates, showStats } = require('./lib/commands');
+const { init, createNew, push, pull, showStats } = require('./lib/commands');
 
 const help = `Usage: devto <init|new|publish|pull|stats> [options]
 
 Commands:
-  i, init             Init current dir as an article repository
-    -p, --pull        Pull your articles from dev.to
-    -s, --skip-git    Skip git repository init
-  n, new <file>       Create new article
-  p, publish [files]  Publish articles to dev.to [default: posts/**/*.md]
-    -c, --check-img   Check all images to be online before publishing
-    -d, --dry-run     Do not make actual changes on dev.to
-    -e, --reconcile   Reconcile articles without id using their title
-  u, pull [files]     Pull updates from dev.to   [default: posts/**/*.md]
-    -e, --reconcile   Reconcile articles without id using their title
-  s, stats            Display stats for your latest published articles
-    -n, --number <n>  Number of articles to list stats for [default: 10]
-    -j, --json        Format result as JSON
+  i, init            Init current dir as an article repository
+    -p, --pull       Pull your articles from dev.to
+    -s, --skip-git   Skip git repository init
+  n, new <file>      Create new article
+  p, push [files]    Push articles to dev.to [default: posts/**/*.md]
+    -c, --check-img  Check all images to be online before pushing
+    -d, --dry-run    Do not make actual changes on dev.to
+    -e, --reconcile  Reconcile articles without id using their title
+  u, pull [files]    Pull updates from dev.to   [default: posts/**/*.md]
+    -e, --reconcile  Reconcile articles without id using their title
+  s, stats           Display stats for your latest published articles
+    -n, --number <n> Number of articles to list stats for [default: 10]
+    -j, --json       Format result as JSON
 
 General options:
   -t, --token <token> Use this dev.to API token
@@ -78,8 +78,8 @@ async function run(args) {
     case 'new':
       return createNew(parameters[0]);
     case 'p':
-    case 'publish':
-      return publish(parameters, {
+    case 'push':
+      return push(parameters, {
         devtoKey: options.token,
         repo: options.repo,
         dryRun: options['dry-run'],
@@ -88,7 +88,7 @@ async function run(args) {
       });
     case 'u':
     case 'pull':
-      return pullUpdates(parameters, {
+      return pull(parameters, {
         devtoKey: options.token,
         repo: options.repo,
         reconcile: options.reconcile
