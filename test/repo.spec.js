@@ -71,7 +71,7 @@ describe('repository methods', () => {
   describe('getRepositoryFromGit', () => {
     it('should return null if git is not installed', async () => {
       const hasbin = require('hasbin');
-      hasbin.mockImplementation(() => false);
+      hasbin.mockImplementation((_, cb) => cb(false));
 
       expect(await getRepositoryFromGit()).toBe(null);
     });
@@ -79,7 +79,7 @@ describe('repository methods', () => {
     it('should return null if git returned an error', async () => {
       const hasbin = require('hasbin');
       const execa = require('execa');
-      hasbin.mockImplementation(() => true);
+      hasbin.mockImplementation((_, cb) => cb(true));
       execa.mockImplementation(() => {
         throw new Error('git error');
       });
@@ -90,7 +90,7 @@ describe('repository methods', () => {
     it('should get repo from git', async () => {
       const hasbin = require('hasbin');
       const execa = require('execa');
-      hasbin.mockImplementation(() => true);
+      hasbin.mockImplementation((_, cb) => cb(true));
       execa.mockImplementation(async () => ({ stdout: 'git@github.com:user/repo.git' }));
 
       expect(await getRepositoryFromGit()).toEqual({ user: 'user', name: 'repo' });
@@ -133,7 +133,7 @@ describe('repository methods', () => {
     it('should get repo from git', async () => {
       const hasbin = require('hasbin');
       const execa = require('execa');
-      hasbin.mockImplementation(() => true);
+      hasbin.mockImplementation((_, cb) => cb(true));
       execa.mockImplementation(async () => ({ stdout: 'git@github.com:user/repo.git' }));
 
       expect(await getRepository()).toEqual({ user: 'user', name: 'repo' });
@@ -141,14 +141,14 @@ describe('repository methods', () => {
 
     it('should get repo from package', async () => {
       const hasbin = require('hasbin');
-      hasbin.mockImplementation(() => false);
+      hasbin.mockImplementation((_, cb) => cb(false));
 
       expect(await getRepository('')).toEqual({ user: 'sinedied', name: 'devto-cli' });
     });
 
     it('should return null', async () => {
       const hasbin = require('hasbin');
-      hasbin.mockImplementation(() => false);
+      hasbin.mockImplementation((_, cb) => cb(false));
       process.chdir('test');
 
       expect(await getRepository('garbage', false)).toBe(null);
