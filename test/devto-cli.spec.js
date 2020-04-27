@@ -5,7 +5,7 @@ jest.mock('../lib/commands');
 function mockConsole() {
   const methods = ['log', 'info', 'warn', 'error'];
   const originalConsole = { ...console };
-  methods.forEach(method => {
+  methods.forEach((method) => {
     console[method] = jest.fn();
   });
   return () => {

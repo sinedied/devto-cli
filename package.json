@@ -41,14 +41,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "execa": "^4.0.0",
     "find-up": "^4.1.0",
     "fs-extra": "^9.0.0",
     "globby": "^11.0.0",
-    "got": "^10.7.0",
+    "got": "^11.0.2",
     "gray-matter": "^4.0.2",
     "hasbin": "^1.2.3",
     "minimist": "^1.2.5",
@@ -59,8 +59,8 @@
     "table": "^5.4.6"
   },
   "devDependencies": {
-    "jest": "^25.2.4",
-    "xo": "^0.28.1"
+    "jest": "^25.4.0",
+    "xo": "^0.30.0"
   },
   "xo": {
     "space": true,
@@ -77,10 +77,12 @@
             "body_markdown",
             "cover_image",
             "published_at",
-            "canonical_url"
+            "canonical_url",
+            "per_page"
           ]
         }
-      ]
+      ],
+      "unicorn/no-fn-reference-in-iterator": "off"
     },
     "ignores": [
       "test/mocks/**/*"
