@@ -48,11 +48,11 @@ async function run(args) {
 
   if (options.version) {
     const pkg = require('./package.json');
-    return console.log(pkg.version);
+    return console.info(pkg.version);
   }
 
   if (options.help) {
-    return console.log(help);
+    return console.info(help);
   }
 
   if (options.verbose) {

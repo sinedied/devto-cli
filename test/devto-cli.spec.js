@@ -26,12 +26,12 @@ describe('devto CLI', () => {
 
   it('should display help', async () => {
     await run(['--help']);
-    expect(console.log).toHaveBeenCalledWith(expect.stringMatching(/^Usage/));
+    expect(console.info).toHaveBeenCalledWith(expect.stringMatching(/^Usage/));
   });
 
   it('should display version', async () => {
     await run(['--version']);
-    expect(console.log).toHaveBeenCalledWith(expect.stringMatching(/^\d+/));
+    expect(console.info).toHaveBeenCalledWith(expect.stringMatching(/^\d+/));
   });
 
   it('should run init command', async () => {
