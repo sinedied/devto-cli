@@ -1,6 +1,6 @@
 {
   "name": "devto-cli",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Authoring CLI to publish markdown files on dev.to platform, using assets hosted on GitHub.",
   "repository": {
     "type": "git",
@@ -19,7 +19,10 @@
     "lint:fix": "xo --fix",
     "test": "xo && jest",
     "test:unit": "jest",
-    "clean": "rm -rf *.js *.d.ts *.tgz"
+    "test:watch": "jest --watch",
+    "clean": "rm -rf *.js *.d.ts *.tgz",
+    "commit": "git-cz",
+    "release:check": "npm run release -s -- --dry-run"
   },
   "keywords": [
     "cli",
@@ -59,7 +62,15 @@
     "table": "^5.4.6"
   },
   "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@jedmao/semantic-release-npm-github-config": "^1.0.9",
+    "commitizen": "^4.0.4",
+    "cz-conventional-changelog": "^3.1.0",
+    "husky": "^4.2.5",
     "jest": "^25.4.0",
+    "lint-staged": "^10.1.7",
+    "semantic-release": "^17.0.7",
     "xo": "^0.30.0"
   },
   "xo": {
@@ -97,6 +108,33 @@
       "lib/**/*.js"
     ],
     "verbose": true
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.js": [
+      "xo --fix",
+      "git add"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "precommit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "release": {
+    "extends": "@jedmao/semantic-release-npm-github-config",
+    "tagFormat": "${version}",
+    "branch": "master"
   },
   "engines": {
     "node": ">=12.0.0",
