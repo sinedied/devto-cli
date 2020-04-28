@@ -1,7 +1,8 @@
 node_modules/
 .vscode/
-*.log
 coverage/
+repo/
+*.log
 *.tgz
 .DS_Store
 Thumbs.db
