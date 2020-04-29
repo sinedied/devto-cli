@@ -11,6 +11,10 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
+    # Avoid issues with Prettier on Windows
+    - name: Disable git automatic line ending conversion
+      run: git config --global core.autocrlf false
+
     - uses: actions/checkout@v1
 
     - name: Use Node.js ${{ matrix.node-version }}
