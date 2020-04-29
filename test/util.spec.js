@@ -1,4 +1,10 @@
-const { convertPathToPosix, updateImagesUrls, scaleNumber, replaceInFile } = require('../lib/util');
+const {
+  convertPathToPosix,
+  updateRelativeImageUrls,
+  getImageUrls,
+  scaleNumber,
+  replaceInFile
+} = require('../lib/util');
 
 jest.mock('fs-extra');
 
@@ -13,7 +19,7 @@ describe('utilities', () => {
     });
   });
 
-  describe('updateImagesUrls', () => {
+  describe('updateRelativeImageUrls', () => {
     const repository = { user: 'me', name: 'repo' };
 
     it('should update local images with full github url', () => {
@@ -26,7 +32,7 @@ describe('utilities', () => {
           ![](./image.gif "with title")
           ![](http://site.com/image.jpg)`
       };
-      const updatedArticle = updateImagesUrls(article, repository);
+      const updatedArticle = updateRelativeImageUrls(article, repository);
       expect(updatedArticle.content).toMatchInlineSnapshot(`
         "
                   ![blurb](https://raw.githubusercontent.com/me/repo/master/local/image.jpg)
@@ -42,7 +48,7 @@ describe('utilities', () => {
         data: { cover_image: './local.jpg' },
         content: ''
       };
-      const updatedArticle = updateImagesUrls(article, repository);
+      const updatedArticle = updateRelativeImageUrls(article, repository);
       expect(updatedArticle.data).toEqual({
         cover_image: 'https://raw.githubusercontent.com/me/repo/master/local.jpg'
       });
@@ -54,8 +60,24 @@ describe('utilities', () => {
         data: { cover_image: 'https://distant.jpg' },
         content: ''
       };
-      const updatedArticle = updateImagesUrls(article, repository);
+      const updatedArticle = updateRelativeImageUrls(article, repository);
       expect(updatedArticle.data).toEqual({ cover_image: 'https://distant.jpg' });
+    });
+  });
+
+  describe('getImageUrls', () => {
+    it('should get all images urls', () => {
+      const article = {
+        file: 'test.md',
+        data: {},
+        content: `
+          ![blurb](local/image.jpg)
+          ![](/image.png)
+          ![](./image.gif "with title")
+          ![](http://site.com/image.jpg)`
+      };
+      const urls = getImageUrls(article);
+      expect(urls).toEqual(['local/image.jpg', '/image.png', './image.gif', 'http://site.com/image.jpg']);
     });
   });
 
