@@ -24,6 +24,7 @@ General options:
   -t, --token <token> Use this dev.to API token
   -r, --repo <repo>   GitHub repository (in "user/repo" form)
   -v, --version       Show version
+  --verbose           Show detailed logs
   --help              Show this help
 `;
 
