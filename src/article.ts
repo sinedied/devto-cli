@@ -1,34 +1,56 @@
-const debug = require('debug')('article');
-const path = require('path');
-const fs = require('fs-extra');
-const globby = require('globby');
-const matter = require('gray-matter');
-const slugify = require('slugify');
-const got = require('got');
-const pMap = require('p-map');
-const { updateRelativeImageUrls, getImageUrls } = require('./util');
+import Debug from 'debug';
+import path from 'path';
+import fs from 'fs-extra';
+import globby from 'globby';
+import matter from 'gray-matter';
+import slugify from 'slugify';
+import got from 'got';
+import pMap from 'p-map';
+import { updateRelativeImageUrls, getImageUrls } from './util';
+import { Repository } from './repo';
 
-const defaultArticlesFolder = 'posts';
+export type ArticleMetadata = Partial<{
+  [key: string]: string | string[] | boolean | number | null;
+  title: string;
+  description: string | null;
+  cover_image: string | null;
+  tags: string | string[] | null;
+  canonical_url: string | null;
+  published: boolean | null;
+  id: number | null;
+  date: string | null;
+}>;
 
-async function getArticlesFromFiles(filesGlob) {
+export interface Article {
+  file: string | null;
+  data: ArticleMetadata;
+  content: string;
+  hasChanged?: boolean;
+}
+
+const debug = Debug('article');
+
+export const defaultArticlesFolder = 'posts';
+
+export async function getArticlesFromFiles(filesGlob: string[]): Promise<Article[]> {
   const files = await globby(filesGlob);
   return Promise.all(files.map(getArticleFromFile));
 }
 
-async function getArticleFromFile(file) {
+async function getArticleFromFile(file: string): Promise<Article> {
   const content = await fs.readFile(file, 'utf-8');
   const article = matter(content, { language: 'yaml' });
   return { file, ...article };
 }
 
-function getArticlesFromRemoteData(data) {
+export function getArticlesFromRemoteData(data: any[]): Article[] {
   return (data || []).map(getArticleFromRemoteData);
 }
 
-function generateFrontMatterMetadata(remoteData) {
+function generateFrontMatterMetadata(remoteData: any): ArticleMetadata {
   const { data: frontmatter } = matter(remoteData.body_markdown);
   // Note: series info is missing here as it's not available through the dev.to API yet
-  const metadata = {
+  const metadata: ArticleMetadata = {
     title: frontmatter.title ? null : remoteData.title,
     description: frontmatter.description ? null : remoteData.description,
     tags: frontmatter.tags ? null : remoteData.tag_list.join(', '),
@@ -50,7 +72,7 @@ function generateFrontMatterMetadata(remoteData) {
   return metadata;
 }
 
-function getArticleFromRemoteData(data) {
+function getArticleFromRemoteData(data: any): Article {
   const article = matter(data.body_markdown);
   return {
     ...article,
@@ -62,13 +84,17 @@ function getArticleFromRemoteData(data) {
   };
 }
 
-function prepareArticleForDevto(article, repository) {
+export function prepareArticleForDevto(article: Article, repository: Repository): Article {
   return updateRelativeImageUrls(article, repository);
 }
 
-async function saveArticleToFile(article) {
+export async function saveArticleToFile(article: Article) {
   try {
-    const markdown = matter.stringify(article.content, article.data, { lineWidth: -1 });
+    if (!article.file) {
+      throw new Error('no filename provided');
+    }
+
+    const markdown = matter.stringify(article.content, article.data, { lineWidth: -1 } as any);
     await fs.ensureDir(path.dirname(article.file));
     await fs.writeFile(article.file, markdown);
     debug('Saved article "%s" to file "%s"', article.data.title, article.file);
@@ -77,7 +103,7 @@ async function saveArticleToFile(article) {
   }
 }
 
-async function updateLocalArticle(article, remoteData) {
+export async function updateLocalArticle(article: Article, remoteData: any): Promise<Article> {
   const data = { ...article.data };
   const newArticle = { ...article, data };
   let hasChanged = false;
@@ -95,24 +121,24 @@ async function updateLocalArticle(article, remoteData) {
   return { ...newArticle, hasChanged };
 }
 
-function generateArticleFilename(article) {
+export function generateArticleFilename(article: Article): Article {
   if (!article.data || !article.data.title) {
     throw new Error('No title found');
   }
 
-  const name = slugify(article.data.title, { lower: true, strict: true });
+  const name = slugify(article.data.title as string, { lower: true, strict: true });
   const file = path.join(defaultArticlesFolder, name + '.md');
   return { ...article, file };
 }
 
-function reconcileLocalArticles(remoteArticles, localArticles, idOnly = true) {
+export function reconcileLocalArticles(remoteArticles: Article[], localArticles: Article[], idOnly = true): Article[] {
   return localArticles.map((article) => {
     if (article.data.id) {
       return article;
     }
 
-    const title = article.data.title && article.data.title.trim();
-    const remoteArticle = remoteArticles.find((a) => a.data.title.trim() === title);
+    const title = article.data.title?.trim();
+    const remoteArticle = remoteArticles.find((a) => a.data.title?.trim() === title);
 
     if (remoteArticle && remoteArticle.data.id) {
       debug('Reconciled article "%s" to ID %s', article.data.title, remoteArticle.data.id);
@@ -132,16 +158,16 @@ function reconcileLocalArticles(remoteArticles, localArticles, idOnly = true) {
   });
 }
 
-function areArticlesEqual(article1, article2) {
+function areArticlesEqual(article1: Article, article2: Article): boolean {
   // Note: ignore date for comparison, since dev.to does not always format it the same way,
   // and it's not meant to be updated anyways
-  const options = { lineWidth: -1 };
+  const options: any = { lineWidth: -1 };
   const a1 = matter.stringify(article1, { ...article1.data, date: null }, options);
   const a2 = matter.stringify(article2, { ...article2.data, date: null }, options);
   return a1 === a2;
 }
 
-function checkIfArticleNeedsUpdate(remoteArticles, article) {
+export function checkIfArticleNeedsUpdate(remoteArticles: Article[], article: Article): boolean {
   if (!article.data.id) {
     return true;
   }
@@ -154,7 +180,7 @@ function checkIfArticleNeedsUpdate(remoteArticles, article) {
   return !areArticlesEqual(remoteArticle, article);
 }
 
-async function createNewArticle(file) {
+export async function createNewArticle(file: string) {
   const article = {
     file,
     content: `My article content`,
@@ -171,12 +197,12 @@ async function createNewArticle(file) {
   await saveArticleToFile(article);
 }
 
-async function checkArticleForOfflineImages(article) {
+export async function checkArticleForOfflineImages(article: Article): Promise<boolean> {
   try {
     const urls = getImageUrls(article);
     debug('Found %s image(s) to check for "%s"', urls.length, article.data.title);
 
-    const checkUrl = async (url) => {
+    const checkUrl = async (url: string) => {
       debug('Checking image "%s"…', url);
       await got(url);
       return false;
@@ -194,17 +220,3 @@ async function checkArticleForOfflineImages(article) {
     return true;
   }
 }
-
-module.exports = {
-  defaultArticlesFolder,
-  getArticlesFromFiles,
-  getArticlesFromRemoteData,
-  prepareArticleForDevto,
-  updateLocalArticle,
-  checkIfArticleNeedsUpdate,
-  reconcileLocalArticles,
-  saveArticleToFile,
-  generateArticleFilename,
-  createNewArticle,
-  checkArticleForOfflineImages
-};

@@ -1,7 +1,7 @@
-const debug = require('debug');
-const minimist = require('minimist');
-const dotenv = require('dotenv');
-const { init, createNew, push, showStats } = require('./lib/commands');
+import debug from 'debug';
+import minimist from 'minimist';
+import dotenv from 'dotenv';
+import { init, createNew, push, showStats } from './commands';
 
 const help = `Usage: devto <init|new|publish|stats> [options]
 
@@ -26,8 +26,8 @@ General options:
   --help              Show this help
 `;
 
-async function run(args) {
-  const options = minimist(args, {
+export default async function run(args: string[]) {
+  const options = minimist(args, <any>{
     number: ['number', 'depth'],
     string: ['token', 'repo'],
     boolean: ['help', 'version', 'reconcile', 'check-img', 'json', 'pull', 'skip-git', 'verbose'],
@@ -96,5 +96,3 @@ async function run(args) {
       return console.log(help);
   }
 }
-
-module.exports = run;

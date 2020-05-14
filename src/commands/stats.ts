@@ -1,11 +1,19 @@
-const debug = require('debug')('init');
-const chalk = require('chalk');
-const { table } = require('table');
-const { getLastArticlesStats } = require('../api');
-const { scaleNumber } = require('../util');
-const { createSpinner } = require('../spinner');
+import Debug from 'debug';
+import chalk from 'chalk';
+import { table } from 'table';
+import { getLastArticlesStats } from '../api';
+import { scaleNumber } from '../util';
+import { createSpinner } from '../spinner';
 
-async function showStats(options) {
+const debug = Debug('init');
+
+interface ShowStatsOptions {
+  devtoKey: string;
+  number: number;
+  json: boolean;
+}
+
+export async function showStats(options?: Partial<ShowStatsOptions>) {
   options = options || {};
   options.number = options.number || 10;
   debug('options: %O', options);
@@ -47,7 +55,7 @@ async function showStats(options) {
     rows.unshift(['Date', 'Title', 'Views', 'Likes', 'Comm.']);
     console.info(
       table(rows, {
-        drawHorizontalLine: (index, size) => index === 0 || index === 1 || index === size,
+        drawHorizontalLine: (index: number, size: number) => index === 0 || index === 1 || index === size,
         columns: { 1: { truncate: maxTitleWidth, width: maxTitleWidth } }
       })
     );
@@ -57,5 +65,3 @@ async function showStats(options) {
     console.error(chalk`{red Error while showing stats: ${error.message}}`);
   }
 }
-
-module.exports = showStats;

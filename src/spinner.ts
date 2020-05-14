@@ -1,11 +1,13 @@
-const ora = require('ora');
-const debug = require('debug')('spinner');
+import Debug, { Debugger } from 'debug';
+import ora from 'ora';
 
-function createSpinner(debugFunc) {
+const debug = Debug('spinner');
+
+export function createSpinner(debugFunc: Debugger) {
   if (debug.enabled) {
     const noop = () => {};
     return {
-      set text(string) {
+      set text(string: string) {
         debugFunc(string);
       },
       start: noop,
@@ -16,7 +18,3 @@ function createSpinner(debugFunc) {
   const spinner = ora({ color: 'green', spinner: 'point' });
   return spinner;
 }
-
-module.exports = {
-  createSpinner
-};

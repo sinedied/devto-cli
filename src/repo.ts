@@ -1,16 +1,22 @@
-const debug = require('debug')('repo');
-const fs = require('fs-extra');
-const findUp = require('find-up');
-const hasbin = require('hasbin');
-const execa = require('execa');
+import Debug from 'debug';
+import fs from 'fs-extra';
+import findUp from 'find-up';
+import hasbin from 'hasbin';
+import execa from 'execa';
 
+export interface Repository {
+  user: string;
+  name: string;
+}
+
+const debug = Debug('repo');
 const repositoryRegex = /.*[/:](.*)\/(.*)\.git|^([^/]*)\/([^/]*)$/;
 const packageFile = 'package.json';
 
-const getShorthandString = (repo) => `${repo.user}/${repo.name}`;
-const hasGitInstalled = async () => new Promise((resolve) => hasbin('git', resolve));
+export const getShorthandString = (repo: Repository) => `${repo.user}/${repo.name}`;
+export const hasGitInstalled = async () => new Promise((resolve) => hasbin('git', resolve));
 
-function parseRepository(string) {
+export function parseRepository(string?: string) {
   if (!string) {
     return null;
   }
@@ -27,12 +33,12 @@ function parseRepository(string) {
   };
 }
 
-async function getRepositoryFromPackage(searchUp) {
+export async function getRepositoryFromPackage(searchUp?: boolean) {
   let pkgPath = null;
 
   if (searchUp) {
     pkgPath = await findUp(packageFile);
-  } else if (await fs.exists(packageFile)) {
+  } else if (await fs.pathExists(packageFile)) {
     pkgPath = packageFile;
   }
 
@@ -55,7 +61,7 @@ async function getRepositoryFromPackage(searchUp) {
   }
 }
 
-async function getRepositoryFromGit() {
+export async function getRepositoryFromGit() {
   if (!(await hasGitInstalled())) {
     debug('Git binary not found');
     return null;
@@ -75,17 +81,17 @@ async function getRepositoryFromGit() {
   }
 }
 
-function getRepositoryFromStringOrEnv(string) {
+export function getRepositoryFromStringOrEnv(string?: string) {
   return parseRepository(string) || parseRepository(process.env.DEVTO_REPO);
 }
 
-async function getRepository(string, searchPackageUp = true) {
+export async function getRepository(string?: string, searchPackageUp = true) {
   return (
     getRepositoryFromStringOrEnv(string) || (await getRepositoryFromGit()) || getRepositoryFromPackage(searchPackageUp)
   );
 }
 
-async function initGitRepository() {
+export async function initGitRepository() {
   try {
     await execa('git', ['init']);
     debug('Git repository initialized');
@@ -93,14 +99,3 @@ async function initGitRepository() {
     debug(`Git error: ${error}`);
   }
 }
-
-module.exports = {
-  getShorthandString,
-  parseRepository,
-  getRepositoryFromPackage,
-  getRepositoryFromGit,
-  getRepositoryFromStringOrEnv,
-  getRepository,
-  hasGitInstalled,
-  initGitRepository
-};

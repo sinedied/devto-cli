@@ -1,26 +1,36 @@
-const debug = require('debug')('init');
-const path = require('path');
-const chalk = require('chalk');
-const fs = require('fs-extra');
-const {
+import Debug from 'debug';
+import path from 'path';
+import chalk from 'chalk';
+import fs from 'fs-extra';
+import {
+  Article,
   defaultArticlesFolder,
   getArticlesFromRemoteData,
   generateArticleFilename,
   saveArticleToFile,
   createNewArticle
-} = require('../article');
-const { getAllArticles } = require('../api');
-const { prompt, replaceInFile } = require('../util');
-const {
+} from '../article';
+import { getAllArticles } from '../api';
+import { prompt, replaceInFile } from '../util';
+import {
   getRepositoryFromStringOrEnv,
   parseRepository,
   getShorthandString,
   hasGitInstalled,
   initGitRepository
-} = require('../repo');
-const { createSpinner } = require('../spinner');
+} from '../repo';
+import { createSpinner } from '../spinner';
 
-async function createGitHubAction(repoString) {
+const debug = Debug('init');
+
+interface InitOptions {
+  pull: boolean;
+  devtoKey: string;
+  repo: string;
+  skipGit: boolean;
+}
+
+async function createGitHubAction(repoString?: string) {
   let repo = getRepositoryFromStringOrEnv(repoString);
   while (!repo) {
     // eslint-disable-next-line no-await-in-loop
@@ -32,7 +42,7 @@ async function createGitHubAction(repoString) {
   await replaceInFile('.github/workflows/publish.yml', 'USERNAME/REPO', getShorthandString(repo));
 }
 
-async function importArticlesFromDevTo(devtoKey) {
+async function importArticlesFromDevTo(devtoKey: string) {
   const remoteData = await getAllArticles(devtoKey);
   console.info(`Retrieving articles from dev.to…`);
 
@@ -40,7 +50,7 @@ async function importArticlesFromDevTo(devtoKey) {
 
   console.info(chalk`Found {green ${remoteArticles.length}} article(s) to import.`);
 
-  const processArticle = async (article) => {
+  const processArticle = async (article: Article) => {
     const newArticle = generateArticleFilename(article);
     await saveArticleToFile(newArticle);
   };
@@ -48,7 +58,7 @@ async function importArticlesFromDevTo(devtoKey) {
   await Promise.all(remoteArticles.map(processArticle));
 }
 
-async function init(options) {
+export async function init(options?: Partial<InitOptions>) {
   options = options || {};
   options.pull = options.pull || false;
   debug('options: %O', options);
@@ -68,11 +78,11 @@ async function init(options) {
     if (options.pull) {
       spinner.text = 'Retrieving articles from dev.to…';
       spinner.start();
-      await importArticlesFromDevTo(options.devtoKey);
+      await importArticlesFromDevTo(options.devtoKey!);
       spinner.stop();
     }
 
-    const articlesFolderExists = await fs.exists(defaultArticlesFolder);
+    const articlesFolderExists = await fs.pathExists(defaultArticlesFolder);
     if (!articlesFolderExists) {
       await createNewArticle(path.join(defaultArticlesFolder, 'article.md'));
       console.info(chalk`Created your first article draft in {green posts/article.md}!`);
@@ -95,5 +105,3 @@ async function init(options) {
     console.error('Init failed.');
   }
 }
-
-module.exports = init;

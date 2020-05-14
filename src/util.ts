@@ -1,20 +1,22 @@
-const path = require('path');
-const { createInterface } = require('readline');
-const fs = require('fs-extra');
+import path from 'path';
+import { createInterface } from 'readline';
+import fs from 'fs-extra';
+import { Repository } from './repo';
+import { Article } from './article';
 
 const hostUrl = 'https://raw.githubusercontent.com';
 const relativeImageRegex = /!\[(.*)]\((?!.*?:\/\/)([^ ]*?) *?( (?:'.*'|".*"))? *?\)/g;
 const imageRegex = /!\[(.*)]\(([^ ]*?) *?( (?:'.*'|".*"))? *?\)/g;
 
-const convertPathToPosix = (path) => path.replace(/\\/g, '/');
-const isUrl = (string) => /^https?:\/\/\w/.test(string);
-const getResourceUrl = (repository) => `${hostUrl}/${repository.user}/${repository.name}/master/`;
-const getFullImagePath = (basePath, imagePath) => convertPathToPosix(path.normalize(path.join(basePath, imagePath)));
+export const convertPathToPosix = (path: string) => path.replace(/\\/g, '/');
+const isUrl = (string: string) => /^https?:\/\/\w/.test(string);
+const getResourceUrl = (repository: Repository) => `${hostUrl}/${repository.user}/${repository.name}/master/`;
+const getFullImagePath = (basePath: string, imagePath: string) => convertPathToPosix(path.normalize(path.join(basePath, imagePath)));
 
-function updateRelativeImageUrls(article, repository) {
+export function updateRelativeImageUrls(article: Article, repository: Repository) {
   const data = { ...article.data };
   let { content } = article;
-  const basePath = path.dirname(article.file);
+  const basePath = path.dirname(article.file as string);
   let match;
 
   while ((match = relativeImageRegex.exec(article.content))) {
@@ -35,7 +37,7 @@ function updateRelativeImageUrls(article, repository) {
   return { ...article, content, data };
 }
 
-function getImageUrls(article) {
+export function getImageUrls(article: Article) {
   const urls = [];
   let match;
 
@@ -53,7 +55,7 @@ function getImageUrls(article) {
   return urls;
 }
 
-function scaleNumber(number, maxLength = 5) {
+export function scaleNumber(number: number, maxLength = 5) {
   const suffix = ['', 'K', 'M', 'G', 'T', 'P'];
   const divisor = 1000;
   let index = 0;
@@ -74,7 +76,7 @@ function scaleNumber(number, maxLength = 5) {
   return result + suffix[index];
 }
 
-function prompt(question) {
+export function prompt(question: string): Promise<string> {
   const read = createInterface({ input: process.stdin, output: process.stdout });
   // eslint-disable-next-line promise/param-names
   return new Promise((resolve, _) => {
@@ -85,17 +87,8 @@ function prompt(question) {
   });
 }
 
-async function replaceInFile(file, stringToReplace, replacement) {
+export async function replaceInFile(file: string, stringToReplace: string, replacement: string) {
   const content = await fs.readFile(file, 'utf-8');
   const newContent = content.replace(stringToReplace, replacement);
   await fs.writeFile(file, newContent);
 }
-
-module.exports = {
-  convertPathToPosix,
-  updateRelativeImageUrls,
-  getImageUrls,
-  scaleNumber,
-  prompt,
-  replaceInFile
-};

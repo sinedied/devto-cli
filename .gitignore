@@ -2,6 +2,7 @@ node_modules/
 .vscode/
 coverage/
 repo/
+lib/
 *.log
 *.tgz
 .DS_Store

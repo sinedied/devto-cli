@@ -1,8 +1,9 @@
-const debug = require('debug')('push');
-const chalk = require('chalk');
-const { table, getBorderCharacters } = require('table');
-const pMap = require('p-map');
-const {
+import Debug from 'debug';
+import chalk from 'chalk';
+import { table, getBorderCharacters } from 'table';
+import pMap from 'p-map';
+import {
+  Article,
   getArticlesFromFiles,
   getArticlesFromRemoteData,
   prepareArticleForDevto,
@@ -11,13 +12,29 @@ const {
   saveArticleToFile,
   reconcileLocalArticles,
   checkArticleForOfflineImages
-} = require('../article');
-const { getAllArticles, updateRemoteArticle } = require('../api');
-const { getRepository } = require('../repo');
-const { syncStatus, publishedStatus } = require('../status');
-const { createSpinner } = require('../spinner');
+} from '../article';
+import { getAllArticles, updateRemoteArticle } from '../api';
+import { Repository, getRepository } from '../repo';
+import { syncStatus, publishedStatus } from '../status';
+import { createSpinner } from '../spinner';
 
-function showResults(results) {
+const debug = Debug('push');
+
+interface PushOptions {
+  devtoKey: string;
+  repo: string;
+  dryRun: boolean;
+  reconcile: boolean;
+  checkImages: true;
+}
+
+interface PushResult {
+  article: Article;
+  status: string; // TODO
+  publishedStatus: string; // TODO
+}
+
+function showResults(results: PushResult[]) {
   const rows = results.map((r) => [r.status, r.publishedStatus, r.article.data.title]);
   const usedWidth = 27; // Status columns + padding
   const availableWidth = process.stdout.columns || 80;
@@ -33,15 +50,15 @@ function showResults(results) {
   );
 }
 
-async function getRemoteArticles(devtoKey) {
+async function getRemoteArticles(devtoKey: string): Promise<Article[]> {
   const remoteData = await getAllArticles(devtoKey);
   const remoteArticles = getArticlesFromRemoteData(remoteData);
   debug('Retrieved %s article(s)', remoteArticles.length);
   return remoteArticles;
 }
 
-async function processArticles(localArticles, remoteArticles, repository, options) {
-  const processArticle = async (article) => {
+async function processArticles(localArticles: Article[], remoteArticles: Article[], repository: Repository, options: Partial<PushOptions>): Promise<PushResult[]> {
+  const processArticle = async (article: Article) => {
     let newArticle = prepareArticleForDevto(article, repository);
     const needsUpdate = checkIfArticleNeedsUpdate(remoteArticles, newArticle);
     let status = newArticle.hasChanged ? syncStatus.reconciled : syncStatus.upToDate;
@@ -52,7 +69,7 @@ async function processArticles(localArticles, remoteArticles, repository, option
         const hasOfflineImages = options.checkImages && (await checkArticleForOfflineImages(newArticle));
 
         if (!options.dryRun && !hasOfflineImages) {
-          updateResult = await updateRemoteArticle(newArticle, options.devtoKey);
+          updateResult = await updateRemoteArticle(newArticle, options.devtoKey!);
           newArticle = await updateLocalArticle(article, updateResult);
         }
 
@@ -89,7 +106,7 @@ async function processArticles(localArticles, remoteArticles, repository, option
   return pMap(localArticles, processArticle, { concurrency: 5 });
 }
 
-async function push(files, options) {
+export async function push(files: string[], options?: Partial<PushOptions>) {
   options = options || {};
   files = files.length > 0 ? files : ['posts/**/*.md'];
   debug('files: %O', files);
@@ -156,5 +173,3 @@ async function push(files, options) {
     console.error('Push failed');
   }
 }
-
-module.exports = push;

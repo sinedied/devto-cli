@@ -1,8 +1,10 @@
-const debug = require('debug')('devto');
-const got = require('got');
-const matter = require('gray-matter');
-const pThrottle = require('p-throttle');
+import Debug from 'debug';
+import got, { Got, GotRequestFunction } from 'got';
+import matter from 'gray-matter';
+import pThrottle from 'p-throttle';
+import { Article } from './article';
 
+const debug = Debug('devto');
 const apiUrl = 'https://dev.to/api';
 const paginationLimit = 1000;
 
@@ -10,11 +12,11 @@ const paginationLimit = 1000;
 // so we need to throttle the API calls in that case.
 const throttledPostForCreate = pThrottle(got.post, 10, 30500);
 
-async function getAllArticles(devtoKey) {
+export async function getAllArticles(devtoKey: string): Promise<any[]> {
   try {
     const articles = [];
     let page = 1;
-    const getPage = (page) =>
+    const getPage = (page: number) =>
       got(`${apiUrl}/articles/me/all`, {
         searchParams: { per_page: paginationLimit, page },
         headers: { 'api-key': devtoKey },
@@ -22,12 +24,12 @@ async function getAllArticles(devtoKey) {
       });
 
     // Handle pagination
-    let newArticles;
+    let newArticles: any[];
     do {
       debug('Requesting articles (page %s)', page);
       // eslint-disable-next-line no-await-in-loop
       const result = await getPage(page++);
-      newArticles = result.body;
+      newArticles = result.body as any[];
       articles.push(...newArticles);
     } while (newArticles.length === paginationLimit);
 
@@ -42,9 +44,9 @@ async function getAllArticles(devtoKey) {
   }
 }
 
-async function getLastArticlesStats(devtoKey, number) {
+export async function getLastArticlesStats(devtoKey: string, number: number) {
   try {
-    const result = await got(`${apiUrl}/articles/me`, {
+    const result = await got<any[]>(`${apiUrl}/articles/me`, {
       searchParams: { per_page: number || 10 },
       headers: { 'api-key': devtoKey },
       responseType: 'json'
@@ -65,12 +67,12 @@ async function getLastArticlesStats(devtoKey, number) {
   }
 }
 
-async function updateRemoteArticle(article, devtoKey) {
+export async function updateRemoteArticle(article: Article, devtoKey: string) {
   try {
-    const markdown = matter.stringify(article, article.data, { lineWidth: -1 });
+    const markdown = matter.stringify(article, article.data, { lineWidth: -1 } as any);
     const { id } = article.data;
     // Throttle API calls in case of article creation
-    const get = id ? got.put : throttledPostForCreate;
+    const get: any = id ? got.put : throttledPostForCreate;
     const result = await get(`${apiUrl}/articles${id ? `/${id}` : ''}`, {
       headers: { 'api-key': devtoKey },
       json: { article: { title: article.data.title, body_markdown: markdown } },
@@ -85,9 +87,3 @@ async function updateRemoteArticle(article, devtoKey) {
     throw error;
   }
 }
-
-module.exports = {
-  getAllArticles,
-  getLastArticlesStats,
-  updateRemoteArticle
-};
