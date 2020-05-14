@@ -93,7 +93,8 @@
           ]
         }
       ],
-      "unicorn/no-fn-reference-in-iterator": "off"
+      "unicorn/no-fn-reference-in-iterator": "off",
+      "accessor-pairs": "off"
     },
     "ignores": [
       "test/mocks/**/*"
