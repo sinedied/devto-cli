@@ -1,9 +1,9 @@
 const debug = require('debug');
 const minimist = require('minimist');
 const dotenv = require('dotenv');
-const { init, createNew, push, pull, showStats } = require('./lib/commands');
+const { init, createNew, push, showStats } = require('./lib/commands');
 
-const help = `Usage: devto <init|new|publish|pull|stats> [options]
+const help = `Usage: devto <init|new|publish|stats> [options]
 
 Commands:
   i, init            Init current dir as an article repository
@@ -13,8 +13,6 @@ Commands:
   p, push [files]    Push articles to dev.to [default: posts/**/*.md]
     -c, --check-img  Check all images to be online before pushing
     -d, --dry-run    Do not make actual changes on dev.to
-    -e, --reconcile  Reconcile articles without id using their title
-  u, pull [files]    Pull updates from dev.to   [default: posts/**/*.md]
     -e, --reconcile  Reconcile articles without id using their title
   s, stats           Display stats for your latest published articles
     -n, --number <n> Number of articles to list stats for [default: 10]
@@ -86,13 +84,6 @@ async function run(args) {
         dryRun: options['dry-run'],
         reconcile: options.reconcile,
         checkImages: options['check-img']
-      });
-    case 'u':
-    case 'pull':
-      return pull(parameters, {
-        devtoKey: options.token,
-        repo: options.repo,
-        reconcile: options.reconcile
       });
     case 's':
     case 'stats':
