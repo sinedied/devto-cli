@@ -3,7 +3,7 @@ import minimist from 'minimist';
 import dotenv from 'dotenv';
 import { init, createNew, push, showStats } from './commands';
 
-const help = `Usage: devto <init|new|publish|stats> [options]
+const help = `Usage: devto <init|new|push|stats> [options]
 
 Commands:
   i, init            Init current dir as an article repository
@@ -26,7 +26,7 @@ General options:
   --help              Show this help
 `;
 
-export default async function run(args: string[]) {
+export async function run(args: string[]) {
   const options = minimist(args, <any>{
     number: ['number', 'depth'],
     string: ['token', 'repo'],

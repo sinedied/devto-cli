@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('../devto-cli.js')(process.argv.slice(2));
+require('../lib/cli').run(process.argv.slice(2));
