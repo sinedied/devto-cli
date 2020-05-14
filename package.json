@@ -30,6 +30,8 @@
     "dev.to",
     "publish",
     "markdown",
+    "github",
+    "host",
     "assets",
     "articles",
     "sync"
@@ -44,7 +46,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@types/node": "^14.0.1",
     "chalk": "^4.0.0",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
@@ -71,6 +72,7 @@
     "@types/got": "^9.6.10",
     "@types/jest": "^25.2.2",
     "@types/minimist": "^1.2.0",
+    "@types/node": "^14.0.1",
     "@types/table": "^5.0.0",
     "commitizen": "^4.1.2",
     "cz-conventional-changelog": "^3.2.0",
