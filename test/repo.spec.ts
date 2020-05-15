@@ -1,12 +1,12 @@
-const path = require('path');
-const {
+import path from 'path';
+import {
   getShorthandString,
   parseRepository,
   getRepositoryFromPackage,
   getRepositoryFromGit,
   getRepositoryFromStringOrEnv,
   getRepository
-} = require('../lib/repo');
+} from '../src/repo';
 
 jest.mock('execa');
 jest.mock('hasbin');
@@ -16,6 +16,7 @@ const resetEnv = () => {
 };
 
 const resetCwd = () => process.chdir(path.join(__dirname, '..'));
+const mockHasbin = (result: boolean) => (_: string, cb: Function) => cb(result);
 
 describe('repository methods', () => {
   describe('getShorthandString', () => {
@@ -71,7 +72,7 @@ describe('repository methods', () => {
   describe('getRepositoryFromGit', () => {
     it('should return null if git is not installed', async () => {
       const hasbin = require('hasbin');
-      hasbin.mockImplementation((_, cb) => cb(false));
+      hasbin.mockImplementation(mockHasbin(false));
 
       expect(await getRepositoryFromGit()).toBe(null);
     });
@@ -79,7 +80,7 @@ describe('repository methods', () => {
     it('should return null if git returned an error', async () => {
       const hasbin = require('hasbin');
       const execa = require('execa');
-      hasbin.mockImplementation((_, cb) => cb(true));
+      hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(() => {
         throw new Error('git error');
       });
@@ -90,7 +91,7 @@ describe('repository methods', () => {
     it('should get repo from git', async () => {
       const hasbin = require('hasbin');
       const execa = require('execa');
-      hasbin.mockImplementation((_, cb) => cb(true));
+      hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(async () => ({ stdout: 'git@github.com:user/repo.git' }));
 
       expect(await getRepositoryFromGit()).toEqual({ user: 'user', name: 'repo' });
@@ -118,8 +119,8 @@ describe('repository methods', () => {
   });
 
   describe('getRepository', () => {
-    beforeEach(() => resetEnv(), resetCwd());
-    afterEach(() => resetEnv(), resetCwd());
+    beforeEach(() => { resetEnv(); resetCwd(); });
+    afterEach(() => { resetEnv(); resetCwd(); });
 
     it('should get repo from string', async () => {
       expect(await getRepository('user/repo')).toEqual({ user: 'user', name: 'repo' });
@@ -133,7 +134,7 @@ describe('repository methods', () => {
     it('should get repo from git', async () => {
       const hasbin = require('hasbin');
       const execa = require('execa');
-      hasbin.mockImplementation((_, cb) => cb(true));
+      hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(async () => ({ stdout: 'git@github.com:user/repo.git' }));
 
       expect(await getRepository()).toEqual({ user: 'user', name: 'repo' });
@@ -141,18 +142,18 @@ describe('repository methods', () => {
 
     it('should get repo from package', async () => {
       const hasbin = require('hasbin');
-      hasbin.mockImplementation((_, cb) => cb(false));
+      hasbin.mockImplementation(mockHasbin(false));
 
       expect(await getRepository('')).toEqual({ user: 'sinedied', name: 'devto-cli' });
     });
 
     it('should return null', async () => {
       const hasbin = require('hasbin');
-      hasbin.mockImplementation((_, cb) => cb(false));
+      hasbin.mockImplementation(mockHasbin(false));
       process.chdir('test');
 
       expect(await getRepository('garbage', false)).toBe(null);
-      expect(await getRepository(null, false)).toBe(null);
+      expect(await getRepository(undefined, false)).toBe(null);
     });
   });
 });

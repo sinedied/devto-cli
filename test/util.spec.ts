@@ -1,10 +1,10 @@
-const {
+import {
   convertPathToPosix,
   updateRelativeImageUrls,
   getImageUrls,
   scaleNumber,
   replaceInFile
-} = require('../lib/util');
+} from '../src/util';
 
 jest.mock('fs-extra');
 

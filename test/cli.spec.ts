@@ -1,12 +1,12 @@
-const run = require('../devto-cli');
+import { run } from '../src/cli';
 
-jest.mock('../lib/commands');
+jest.mock('../src/commands');
 
 function mockConsole() {
   const methods = ['log', 'info', 'warn', 'error'];
   const originalConsole = { ...console };
   methods.forEach((method) => {
-    console[method] = jest.fn();
+    (console as any)[method] = jest.fn();
   });
   return () => {
     global.console = originalConsole;
@@ -14,7 +14,7 @@ function mockConsole() {
 }
 
 describe('devto CLI', () => {
-  let restoreConsole;
+  let restoreConsole: Function;
 
   beforeEach(() => {
     restoreConsole = mockConsole();
@@ -35,7 +35,7 @@ describe('devto CLI', () => {
   });
 
   it('should run init command', async () => {
-    const { init } = require('../lib/commands');
+    const { init } = require('../src/commands');
     await run(['init', '--token=123', '--repo=git/repo', '--pull', '--skip-git']);
     expect(init).toHaveBeenCalledWith({
       devtoKey: '123',
@@ -46,7 +46,7 @@ describe('devto CLI', () => {
   });
 
   it('should run push command', async () => {
-    const { push } = require('../lib/commands');
+    const { push } = require('../src/commands');
     await run(['push', 'posts/*.md', '--token=123', '--repo=git/repo', '--dry-run', '--reconcile', '--check-img']);
     expect(push).toHaveBeenCalledWith(['posts/*.md'], {
       devtoKey: '123',
@@ -58,7 +58,7 @@ describe('devto CLI', () => {
   });
 
   it('should run pull command', async () => {
-    const { pull } = require('../lib/commands');
+    const { pull } = require('../src/commands');
     await run(['pull', 'posts/*.md', '--token=123', '--repo=git/repo', '--reconcile']);
     expect(pull).toHaveBeenCalledWith(['posts/*.md'], {
       devtoKey: '123',
@@ -68,13 +68,13 @@ describe('devto CLI', () => {
   });
 
   it('should run new command', async () => {
-    const { createNew } = require('../lib/commands');
+    const { createNew } = require('../src/commands');
     await run(['new', 'article']);
     expect(createNew).toHaveBeenCalledWith('article');
   });
 
   it('should run stats command', async () => {
-    const { showStats } = require('../lib/commands');
+    const { showStats } = require('../src/commands');
     await run(['stats', '--token=123', '--number=20']);
     expect(showStats).toHaveBeenCalledWith({
       devtoKey: '123',
