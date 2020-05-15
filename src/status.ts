@@ -1,4 +1,4 @@
-import chalk = require('chalk');
+import chalk from 'chalk';
 
 export const syncStatus = {
   upToDate: chalk`{grey [UP-TO-DATE]}`,

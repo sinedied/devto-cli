@@ -46,7 +46,7 @@ export async function run(args: string[]) {
   });
 
   if (options.version) {
-    const pkg = require('./package.json');
+    const pkg = require('../package.json');
     return console.info(pkg.version);
   }
 
