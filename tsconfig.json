@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "rootDir": "./src",
+    "target": "es2019",
     "module": "commonjs",
-    "lib": ["es2017"],
+    "lib": ["es2020"],
     "declaration": true,
     "outDir": "./lib",
     "strict": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
   },
-  "include": ["src"],
-  "exclude": ["lib", "test"]
+  "include": ["./src"]
 }
