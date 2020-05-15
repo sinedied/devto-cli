@@ -57,16 +57,6 @@ describe('devto CLI', () => {
     });
   });
 
-  it('should run pull command', async () => {
-    const { pull } = require('../src/commands');
-    await run(['pull', 'posts/*.md', '--token=123', '--repo=git/repo', '--reconcile']);
-    expect(pull).toHaveBeenCalledWith(['posts/*.md'], {
-      devtoKey: '123',
-      repo: 'git/repo',
-      reconcile: true
-    });
-  });
-
   it('should run new command', async () => {
     const { createNew } = require('../src/commands');
     await run(['new', 'article']);
