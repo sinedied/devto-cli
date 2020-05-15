@@ -49,12 +49,12 @@ export async function getAllArticles(devtoKey: string): Promise<RemoteArticleDat
       });
 
     // Handle pagination
-    let newArticles: any[];
+    let newArticles: RemoteArticleData[];
     do {
       debug('Requesting articles (page %s)', page);
       // eslint-disable-next-line no-await-in-loop
       const result = await getPage(page++);
-      newArticles = result.body as any[];
+      newArticles = result.body as RemoteArticleData[];
       articles.push(...newArticles);
     } while (newArticles.length === paginationLimit);
 

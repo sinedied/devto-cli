@@ -10,6 +10,9 @@ import { updateRelativeImageUrls, getImageUrls } from './util';
 import { Repository } from './repo';
 import { RemoteArticleData } from './api';
 
+const debug = Debug('article');
+export const defaultArticlesFolder = 'posts';
+
 export type ArticleMetadata = Partial<{
   [key: string]: string | string[] | boolean | number | null;
   title: string | null;
@@ -28,10 +31,6 @@ export interface Article {
   content: string;
   hasChanged?: boolean;
 }
-
-const debug = Debug('article');
-
-export const defaultArticlesFolder = 'posts';
 
 export async function getArticlesFromFiles(filesGlob: string[]): Promise<Article[]> {
   const files = await globby(filesGlob);

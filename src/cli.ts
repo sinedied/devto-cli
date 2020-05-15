@@ -27,8 +27,7 @@ General options:
 `;
 
 export async function run(args: string[]) {
-  const options = minimist(args, <any>{
-    number: ['number', 'depth'],
+  const options = minimist(args, {
     string: ['token', 'repo'],
     boolean: ['help', 'version', 'reconcile', 'check-img', 'json', 'pull', 'skip-git', 'verbose'],
     alias: {
