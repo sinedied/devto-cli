@@ -15,7 +15,7 @@ import {
 } from '../article';
 import { getAllArticles, updateRemoteArticle } from '../api';
 import { Repository, getRepository } from '../repo';
-import { syncStatus, publishedStatus } from '../status';
+import { SyncStatus, PublishedStatus } from '../status';
 import { createSpinner } from '../spinner';
 
 const debug = Debug('push');
@@ -61,7 +61,7 @@ async function processArticles(localArticles: Article[], remoteArticles: Article
   const processArticle = async (article: Article) => {
     let newArticle = prepareArticleForDevto(article, repository);
     const needsUpdate = checkIfArticleNeedsUpdate(remoteArticles, newArticle);
-    let status = newArticle.hasChanged ? syncStatus.reconciled : syncStatus.upToDate;
+    let status = newArticle.hasChanged ? SyncStatus.reconciled : SyncStatus.upToDate;
     let updateResult = null;
 
     if (needsUpdate) {
@@ -74,13 +74,13 @@ async function processArticles(localArticles: Article[], remoteArticles: Article
         }
 
         if (hasOfflineImages) {
-          status = syncStatus.imageOffline;
+          status = SyncStatus.imageOffline;
         } else {
-          status = newArticle.data.id ? syncStatus.updated : syncStatus.created;
+          status = newArticle.data.id ? SyncStatus.updated : SyncStatus.created;
         }
       } catch (error) {
         debug('Article update failed: %s', error.toString());
-        status = syncStatus.failed;
+        status = SyncStatus.failed;
       }
     }
 
@@ -92,14 +92,14 @@ async function processArticles(localArticles: Article[], remoteArticles: Article
         }
       } catch (error) {
         debug('Cannot save article "%s": %s', newArticle.data.title, error.toString());
-        status = syncStatus.outOfSync;
+        status = SyncStatus.outOfSync;
       }
     }
 
     return {
       article: newArticle,
       status,
-      publishedStatus: newArticle.data.published ? publishedStatus.published : publishedStatus.draft
+      publishedStatus: newArticle.data.published ? PublishedStatus.published : PublishedStatus.draft
     };
   };
 
@@ -157,12 +157,12 @@ export async function push(files: string[], options?: Partial<PushOptions>) {
     spinner.stop();
     showResults(results);
 
-    const outOfSync = results.some((r) => r.status === syncStatus.outOfSync);
+    const outOfSync = results.some((r) => r.status === SyncStatus.outOfSync);
     if (outOfSync) {
       console.info(chalk`{yellow Some local files are out of sync. Retry pushing with {bold --reconcile} option.}`);
     }
 
-    const failed = results.some((r) => r.status === syncStatus.failed || r.status === syncStatus.imageOffline);
+    const failed = results.some((r) => r.status === SyncStatus.failed || r.status === SyncStatus.imageOffline);
     if (failed) {
       process.exitCode = -1;
     }

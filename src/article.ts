@@ -8,10 +8,11 @@ import got from 'got';
 import pMap from 'p-map';
 import { updateRelativeImageUrls, getImageUrls } from './util';
 import { Repository } from './repo';
+import { RemoteArticleData } from './api';
 
 export type ArticleMetadata = Partial<{
   [key: string]: string | string[] | boolean | number | null;
-  title: string;
+  title: string | null;
   description: string | null;
   cover_image: string | null;
   tags: string | string[] | null;
@@ -43,11 +44,11 @@ async function getArticleFromFile(file: string): Promise<Article> {
   return { file, ...article };
 }
 
-export function getArticlesFromRemoteData(data: any[]): Article[] {
+export function getArticlesFromRemoteData(data: RemoteArticleData[]): Article[] {
   return (data || []).map(getArticleFromRemoteData);
 }
 
-function generateFrontMatterMetadata(remoteData: any): ArticleMetadata {
+function generateFrontMatterMetadata(remoteData: RemoteArticleData): ArticleMetadata {
   const { data: frontmatter } = matter(remoteData.body_markdown);
   // Note: series info is missing here as it's not available through the dev.to API yet
   const metadata: ArticleMetadata = {
@@ -72,7 +73,7 @@ function generateFrontMatterMetadata(remoteData: any): ArticleMetadata {
   return metadata;
 }
 
-function getArticleFromRemoteData(data: any): Article {
+function getArticleFromRemoteData(data: RemoteArticleData): Article {
   const article = matter(data.body_markdown);
   return {
     ...article,
@@ -103,7 +104,7 @@ export async function saveArticleToFile(article: Article) {
   }
 }
 
-export async function updateLocalArticle(article: Article, remoteData: any): Promise<Article> {
+export async function updateLocalArticle(article: Article, remoteData: RemoteArticleData): Promise<Article> {
   const data = { ...article.data };
   const newArticle = { ...article, data };
   let hasChanged = false;

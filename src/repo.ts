@@ -16,7 +16,7 @@ const packageFile = 'package.json';
 export const getShorthandString = (repo: Repository) => `${repo.user}/${repo.name}`;
 export const hasGitInstalled = async () => new Promise((resolve) => hasbin('git', resolve));
 
-export function parseRepository(string?: string) {
+export function parseRepository(string?: string): Repository | null {
   if (!string) {
     return null;
   }
@@ -33,7 +33,7 @@ export function parseRepository(string?: string) {
   };
 }
 
-export async function getRepositoryFromPackage(searchUp?: boolean) {
+export async function getRepositoryFromPackage(searchUp?: boolean): Promise<Repository | null> {
   let pkgPath = null;
 
   if (searchUp) {
@@ -61,7 +61,7 @@ export async function getRepositoryFromPackage(searchUp?: boolean) {
   }
 }
 
-export async function getRepositoryFromGit() {
+export async function getRepositoryFromGit(): Promise<Repository | null> {
   if (!(await hasGitInstalled())) {
     debug('Git binary not found');
     return null;
@@ -81,11 +81,11 @@ export async function getRepositoryFromGit() {
   }
 }
 
-export function getRepositoryFromStringOrEnv(string?: string) {
+export function getRepositoryFromStringOrEnv(string?: string): Repository | null {
   return parseRepository(string) || parseRepository(process.env.DEVTO_REPO);
 }
 
-export async function getRepository(string?: string, searchPackageUp = true) {
+export async function getRepository(string?: string, searchPackageUp = true): Promise<Repository | null> {
   return (
     getRepositoryFromStringOrEnv(string) || (await getRepositoryFromGit()) || getRepositoryFromPackage(searchPackageUp)
   );

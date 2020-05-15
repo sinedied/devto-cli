@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-export const syncStatus = {
+export const SyncStatus = {
   upToDate: chalk`{grey [UP-TO-DATE]}`,
   created: chalk`{green [CREATED]}`,
   updated: chalk`{green [UPDATED]}`,
@@ -10,7 +10,7 @@ export const syncStatus = {
   imageOffline: chalk`{red [IMG OFFLINE]}`
 };
 
-export const publishedStatus = {
+export const PublishedStatus = {
   draft: chalk`{grey [DRAFT]}`,
   published: chalk`{cyan [PUBLISHED]}`
 };

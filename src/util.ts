@@ -8,12 +8,12 @@ const hostUrl = 'https://raw.githubusercontent.com';
 const relativeImageRegex = /!\[(.*)]\((?!.*?:\/\/)([^ ]*?) *?( (?:'.*'|".*"))? *?\)/g;
 const imageRegex = /!\[(.*)]\(([^ ]*?) *?( (?:'.*'|".*"))? *?\)/g;
 
-export const convertPathToPosix = (path: string) => path.replace(/\\/g, '/');
-const isUrl = (string: string) => /^https?:\/\/\w/.test(string);
-const getResourceUrl = (repository: Repository) => `${hostUrl}/${repository.user}/${repository.name}/master/`;
-const getFullImagePath = (basePath: string, imagePath: string) => convertPathToPosix(path.normalize(path.join(basePath, imagePath)));
+export const convertPathToPosix = (path: string): string => path.replace(/\\/g, '/');
+const isUrl = (string: string): boolean => /^https?:\/\/\w/.test(string);
+const getResourceUrl = (repository: Repository): string => `${hostUrl}/${repository.user}/${repository.name}/master/`;
+const getFullImagePath = (basePath: string, imagePath: string): string => convertPathToPosix(path.normalize(path.join(basePath, imagePath)));
 
-export function updateRelativeImageUrls(article: Article, repository: Repository) {
+export function updateRelativeImageUrls(article: Article, repository: Repository): Article {
   const data = { ...article.data };
   let { content } = article;
   const basePath = path.dirname(article.file as string);
@@ -37,7 +37,7 @@ export function updateRelativeImageUrls(article: Article, repository: Repository
   return { ...article, content, data };
 }
 
-export function getImageUrls(article: Article) {
+export function getImageUrls(article: Article): string[] {
   const urls = [];
   let match;
 
@@ -55,7 +55,7 @@ export function getImageUrls(article: Article) {
   return urls;
 }
 
-export function scaleNumber(number: number, maxLength = 5) {
+export function scaleNumber(number: number, maxLength = 5): string {
   const suffix = ['', 'K', 'M', 'G', 'T', 'P'];
   const divisor = 1000;
   let index = 0;

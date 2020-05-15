@@ -1,5 +1,5 @@
 import Debug from 'debug';
-import got, { Got, GotRequestFunction } from 'got';
+import got from 'got';
 import matter from 'gray-matter';
 import pThrottle from 'p-throttle';
 import { Article } from './article';
@@ -12,7 +12,32 @@ const paginationLimit = 1000;
 // so we need to throttle the API calls in that case.
 const throttledPostForCreate = pThrottle(got.post, 10, 30500);
 
-export async function getAllArticles(devtoKey: string): Promise<any[]> {
+// This is a partial interface just enough for our needs
+export interface RemoteArticleData {
+  id: number;
+  title: string;
+  description: string;
+  cover_image: string;
+  tag_list: string[];
+  canonical_url: string;
+  url: string;
+  published: boolean;
+  published_at: string;
+  body_markdown: string;
+  page_views_count: number;
+  positive_reactions_count: number;
+  comments_count: number;
+}
+
+export interface ArticleStats {
+  date: string;
+  title: string;
+  views: number;
+  reactions: number;
+  comments: number;
+}
+
+export async function getAllArticles(devtoKey: string): Promise<RemoteArticleData[]> {
   try {
     const articles = [];
     let page = 1;
@@ -44,7 +69,7 @@ export async function getAllArticles(devtoKey: string): Promise<any[]> {
   }
 }
 
-export async function getLastArticlesStats(devtoKey: string, number: number) {
+export async function getLastArticlesStats(devtoKey: string, number: number): Promise<ArticleStats[]> {
   try {
     const result = await got<any[]>(`${apiUrl}/articles/me`, {
       searchParams: { per_page: number || 10 },
@@ -67,7 +92,7 @@ export async function getLastArticlesStats(devtoKey: string, number: number) {
   }
 }
 
-export async function updateRemoteArticle(article: Article, devtoKey: string) {
+export async function updateRemoteArticle(article: Article, devtoKey: string): Promise<RemoteArticleData> {
   try {
     const markdown = matter.stringify(article, article.data, { lineWidth: -1 } as any);
     const { id } = article.data;
