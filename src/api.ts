@@ -42,7 +42,7 @@ export async function getAllArticles(devtoKey: string): Promise<RemoteArticleDat
     const articles = [];
     let page = 1;
     const getPage = (page: number) =>
-      got(`${apiUrl}/articles/me/all`, {
+      got<RemoteArticleData[]>(`${apiUrl}/articles/me/all`, {
         searchParams: { per_page: paginationLimit, page },
         headers: { 'api-key': devtoKey },
         responseType: 'json'
@@ -54,7 +54,7 @@ export async function getAllArticles(devtoKey: string): Promise<RemoteArticleDat
       debug('Requesting articles (page %s)', page);
       // eslint-disable-next-line no-await-in-loop
       const result = await getPage(page++);
-      newArticles = result.body as RemoteArticleData[];
+      newArticles = result.body;
       articles.push(...newArticles);
     } while (newArticles.length === paginationLimit);
 
@@ -71,7 +71,7 @@ export async function getAllArticles(devtoKey: string): Promise<RemoteArticleDat
 
 export async function getLastArticlesStats(devtoKey: string, number: number): Promise<ArticleStats[]> {
   try {
-    const result = await got<any[]>(`${apiUrl}/articles/me`, {
+    const result = await got<RemoteArticleData[]>(`${apiUrl}/articles/me`, {
       searchParams: { per_page: number || 10 },
       headers: { 'api-key': devtoKey },
       responseType: 'json'
