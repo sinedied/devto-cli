@@ -1,7 +1,7 @@
 {
   "name": "devto-cli",
   "version": "0.0.0",
-  "description": "Dev.to authoring CLI to publish markdown files to platform, using assets hosted on GitHub.",
+  "description": "Dev.to authoring CLI to create and publish markdown files, using assets hosted on GitHub.",
   "repository": {
     "type": "git",
     "url": "https://github.com/sinedied/devto-cli.git"
