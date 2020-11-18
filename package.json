@@ -70,7 +70,7 @@
     "husky": "^4.2.5",
     "jest": "^25.4.0",
     "lint-staged": "^10.1.7",
-    "semantic-release": "^17.0.7",
+    "semantic-release": "^17.2.3",
     "xo": "^0.30.0"
   },
   "xo": {
