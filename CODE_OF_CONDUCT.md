@@ -1,4 +1,3 @@
-
 # Contributor Code of Conduct
 
 As contributors and maintainers of this project, we pledge to respect everyone who contributes by posting issues, updating documentation, submitting pull requests, providing feedback in comments, and any other activities.
@@ -9,4 +8,4 @@ We promise to extend courtesy and respect to everyone involved in this project r
 
 If any member of the community violates this code of conduct, the maintainers of this project will take action, removing issues, comments, and PRs or blocking accounts as deemed appropriate.
 
-If you are subject to or witness unacceptable behavior, or have any other concerns, please contact using any of this project's channels.
+If you are subject to or witness unacceptable behavior, or have any other concerns, please contact us using any of this project's channels.
