@@ -11,8 +11,8 @@ Commands:
     -s, --skip-git   Skip git repository init
   n, new <file>      Create new article
   p, push [files]    Push articles to dev.to [default: posts/**/*.md]
-    -c, --check-img  Check all images to be online before pushing
     -d, --dry-run    Do not make actual changes on dev.to
+    -c, --no-check   Do not check images links to be online before pushing
     -e, --reconcile  Reconcile articles without id using their title
   s, stats           Display stats for your latest published articles
     -n, --number <n> Number of articles to list stats for [default: 10]
@@ -29,11 +29,10 @@ General options:
 export async function run(args: string[]) {
   const options = minimist(args, {
     string: ['token', 'repo'],
-    boolean: ['help', 'version', 'reconcile', 'check-img', 'json', 'pull', 'skip-git', 'verbose'],
+    boolean: ['help', 'version', 'reconcile', 'skip-check-images', 'json', 'pull', 'skip-git', 'verbose'],
     alias: {
       e: 'reconcile',
       d: 'dry-run',
-      c: 'check-img',
       n: 'number',
       t: 'token',
       v: 'version',
@@ -82,7 +81,7 @@ export async function run(args: string[]) {
         repo: options.repo,
         dryRun: options['dry-run'],
         reconcile: options.reconcile,
-        checkImages: options['check-img']
+        checkImages: !options['skip-check-images']
       });
     case 's':
     case 'stats':

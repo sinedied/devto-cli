@@ -25,7 +25,7 @@ interface PushOptions {
   repo: string;
   dryRun: boolean;
   reconcile: boolean;
-  checkImages: true;
+  checkImages: boolean;
 }
 
 interface PushResult {
@@ -57,7 +57,12 @@ async function getRemoteArticles(devtoKey: string): Promise<Article[]> {
   return remoteArticles;
 }
 
-async function processArticles(localArticles: Article[], remoteArticles: Article[], repository: Repository, options: Partial<PushOptions>): Promise<PushResult[]> {
+async function processArticles(
+  localArticles: Article[],
+  remoteArticles: Article[],
+  repository: Repository,
+  options: Partial<PushOptions>
+): Promise<PushResult[]> {
   const processArticle = async (article: Article) => {
     let newArticle = prepareArticleForDevto(article, repository);
     const needsUpdate = checkIfArticleNeedsUpdate(remoteArticles, newArticle);
@@ -107,7 +112,7 @@ async function processArticles(localArticles: Article[], remoteArticles: Article
 }
 
 export async function push(files: string[], options?: Partial<PushOptions>) {
-  options = options || {};
+  options = options ?? {};
   files = files.length > 0 ? files : ['posts/**/*.md'];
   debug('files: %O', files);
   debug('options: %O', options);
