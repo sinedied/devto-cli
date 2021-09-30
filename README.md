@@ -146,6 +146,17 @@ You can also create a `.env` file at the root of your repository and add `DEVTO_
 
 TODO + template repo
 
+## Using frontmatter properties
+
+Any markdown file matching the specified input pattern and containing at least a `title` frontmatter property will be considered as an article and synchronized with dev.to.
+
+All frontmatter properties [natively supported by dev.to](https://dev.to/p/editor_guide#front-matter) can be used here.
+
+In addition, these frontmatter properties specified to the CLI are used to configure the behavior of the tool:
+- `id`: The article ID on dev.to. If not specified, a new article will be created on publish.
+- `date`: The publication date of the article. If not specified, the current date will be used on publish.
+- `devto_sync`: If set to `false`, the article will not be synchronized with dev.to at all.
+
 ## Related
 
 This CLI was heavily inspired by the [dev-to-git](https://github.com/maxime1992/dev-to-git). I used in fact `dev-to-git` for some time, but ultimately wanted something more flexible and easier to use and setup without the need for config files. I also wanted full automation support in a GitHub Action, leading me to create this new tool.
