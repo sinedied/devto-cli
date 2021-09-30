@@ -126,7 +126,7 @@ export function generateArticleFilename(article: Article): Article {
     throw new Error('No title found');
   }
 
-  const name = slugify(article.data.title as string, { lower: true, strict: true });
+  const name = slugify(article.data.title, { lower: true, strict: true });
   const file = path.join(defaultArticlesFolder, name + '.md');
   return { ...article, file };
 }
@@ -140,7 +140,7 @@ export function reconcileLocalArticles(remoteArticles: Article[], localArticles:
     const title = article.data.title?.trim();
     const remoteArticle = remoteArticles.find((a) => a.data.title?.trim() === title);
 
-    if (remoteArticle && remoteArticle.data.id) {
+    if (remoteArticle?.data.id) {
       debug('Reconciled article "%s" to ID %s', article.data.title, remoteArticle.data.id);
       const reconciledMetadata = idOnly ? { id: remoteArticle.data.id } : { ...remoteArticle.data };
 

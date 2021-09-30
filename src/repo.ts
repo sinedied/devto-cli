@@ -82,12 +82,12 @@ export async function getRepositoryFromGit(): Promise<Repository | null> {
 }
 
 export function getRepositoryFromStringOrEnv(string?: string): Repository | null {
-  return parseRepository(string) || parseRepository(process.env.DEVTO_REPO);
+  return parseRepository(string) ?? parseRepository(process.env.DEVTO_REPO);
 }
 
 export async function getRepository(string?: string, searchPackageUp = true): Promise<Repository | null> {
   return (
-    getRepositoryFromStringOrEnv(string) || (await getRepositoryFromGit()) || getRepositoryFromPackage(searchPackageUp)
+    getRepositoryFromStringOrEnv(string) ?? (await getRepositoryFromGit()) ?? getRepositoryFromPackage(searchPackageUp)
   );
 }
 

@@ -1,10 +1,4 @@
-import {
-  convertPathToPosix,
-  updateRelativeImageUrls,
-  getImageUrls,
-  scaleNumber,
-  replaceInFile
-} from '../src/util';
+import { convertPathToPosix, updateRelativeImageUrls, getImageUrls, scaleNumber, replaceInFile } from '../src/util';
 
 jest.mock('fs-extra');
 

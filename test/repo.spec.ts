@@ -119,8 +119,14 @@ describe('repository methods', () => {
   });
 
   describe('getRepository', () => {
-    beforeEach(() => { resetEnv(); resetCwd(); });
-    afterEach(() => { resetEnv(); resetCwd(); });
+    beforeEach(() => {
+      resetEnv();
+      resetCwd();
+    });
+    afterEach(() => {
+      resetEnv();
+      resetCwd();
+    });
 
     it('should get repo from string', async () => {
       expect(await getRepository('user/repo')).toEqual({ user: 'user', name: 'repo' });

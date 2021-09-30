@@ -59,8 +59,8 @@ async function importArticlesFromDevTo(devtoKey: string) {
 }
 
 export async function init(options?: Partial<InitOptions>) {
-  options = options || {};
-  options.pull = options.pull || false;
+  options = options ?? {};
+  options.pull = options.pull ?? false;
   debug('options: %O', options);
 
   if (options.pull && !options.devtoKey) {

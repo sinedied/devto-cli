@@ -11,7 +11,8 @@ const imageRegex = /!\[(.*)]\(([^ ]*?) *?( (?:'.*'|".*"))? *?\)/g;
 export const convertPathToPosix = (path: string): string => path.replace(/\\/g, '/');
 const isUrl = (string: string): boolean => /^https?:\/\/\w/.test(string);
 const getResourceUrl = (repository: Repository): string => `${hostUrl}/${repository.user}/${repository.name}/master/`;
-const getFullImagePath = (basePath: string, imagePath: string): string => convertPathToPosix(path.normalize(path.join(basePath, imagePath)));
+const getFullImagePath = (basePath: string, imagePath: string): string =>
+  convertPathToPosix(path.normalize(path.join(basePath, imagePath)));
 
 export function updateRelativeImageUrls(article: Article, repository: Repository): Article {
   const data = { ...article.data };

@@ -61,7 +61,7 @@ export async function getAllArticles(devtoKey: string): Promise<RemoteArticleDat
     debug('Found %s remote article(s)', articles.length);
     return articles;
   } catch (error) {
-    if (error && error.response) {
+    if (error?.response) {
       debug('Debug infos: %O', error.response.body);
     }
 
@@ -84,7 +84,7 @@ export async function getLastArticlesStats(devtoKey: string, number: number): Pr
       comments: a.comments_count
     }));
   } catch (error) {
-    if (error && error.response) {
+    if (error?.response) {
       debug('Debug infos: %O', error.response.body);
     }
 
@@ -105,7 +105,7 @@ export async function updateRemoteArticle(article: Article, devtoKey: string): P
     });
     return result.body;
   } catch (error) {
-    if (error && error.response) {
+    if (error?.response) {
       debug('Debug infos: %O', error.response.body);
     }
 
