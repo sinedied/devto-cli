@@ -34,12 +34,20 @@ export interface Article {
 
 export async function getArticlesFromFiles(filesGlob: string[]): Promise<Article[]> {
   const files = await globby(filesGlob);
-  return Promise.all(files.map(getArticleFromFile));
+  const articles = await Promise.all(files.map(getArticleFromFile));
+  return articles.filter(article => article !== null) as Article[];
 }
 
-async function getArticleFromFile(file: string): Promise<Article> {
+async function getArticleFromFile(file: string): Promise<Article | null> {
   const content = await fs.readFile(file, 'utf-8');
   const article = matter(content, { language: 'yaml' });
+
+  // An article must have a least a title property and sync should not be disabled
+  if (!article.data.title || (article.data.devto_sync !== undefined && !article.data.devto_sync)) {
+    debug('File "%s" do not have a title or has sync disabled, skipping', file);
+    return null;
+  }
+
   return { file, ...article };
 }
 
