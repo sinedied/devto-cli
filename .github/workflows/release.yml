@@ -3,10 +3,11 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [release]
+
 jobs:
   release:
-    name: release
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     steps:
     - uses: actions/checkout@v1
     - name: Use Node.js v14
@@ -15,8 +16,10 @@ jobs:
         node-version: 14
     - name: Install dependencies
       run: npm ci
-    - name: Release
+      env:
+          CI: true
+    - run: npx semantic-release
+      if: success()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      run: npm run release
