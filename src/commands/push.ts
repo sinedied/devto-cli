@@ -84,7 +84,7 @@ async function processArticles(
           status = newArticle.data.id ? SyncStatus.updated : SyncStatus.created;
         }
       } catch (error) {
-        debug('Article update failed: %s', error.toString());
+        debug('Article update failed: %s', String(error));
         status = SyncStatus.failed;
       }
     }
@@ -96,7 +96,7 @@ async function processArticles(
           await saveArticleToFile(newArticle);
         }
       } catch (error) {
-        debug('Cannot save article "%s": %s', newArticle.data.title, error.toString());
+        debug('Cannot save article "%s": %s', newArticle.data.title, String(error));
         status = SyncStatus.outOfSync;
       }
     }
@@ -174,7 +174,7 @@ export async function push(files: string[], options?: Partial<PushOptions>) {
   } catch (error) {
     spinner.stop();
     process.exitCode = -1;
-    console.error(chalk`{red Error: ${error.message}}`);
+    console.error(chalk`{red Error: ${(error as Error).message}}`);
     console.error('Push failed');
   }
 }

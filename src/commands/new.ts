@@ -20,7 +20,7 @@ export async function createNew(file?: string) {
     console.info(chalk`Created {green ${newFile}}.`);
   } catch (error) {
     process.exitCode = -1;
-    console.error(chalk`{red Error: ${error.message}}`);
+    console.error(chalk`{red Error: ${(error as Error).message}}`);
     console.error('New article creation failed.');
   }
 }

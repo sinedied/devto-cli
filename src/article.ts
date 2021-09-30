@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import globby from 'globby';
 import matter from 'gray-matter';
 import slugify from 'slugify';
-import got from 'got';
+import got, { RequestError } from 'got';
 import pMap from 'p-map';
 import { updateRelativeImageUrls, getImageUrls } from './util';
 import { Repository } from './repo';
@@ -219,10 +219,10 @@ export async function checkArticleForOfflineImages(article: Article): Promise<bo
     await pMap(urls, checkUrl, { concurrency: 5 });
     return false;
   } catch (error) {
-    if (error.response) {
+    if (error instanceof RequestError && error.response) {
       debug('Image "%s" appears to be offline', error.response.requestUrl);
     } else {
-      debug('Error while checking image: %s', error.toString());
+      debug('Error while checking image: %s', String(error));
     }
 
     return true;

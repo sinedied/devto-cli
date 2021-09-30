@@ -101,7 +101,7 @@ export async function init(options?: Partial<InitOptions>) {
   } catch (error) {
     spinner.stop();
     process.exitCode = -1;
-    console.error(chalk`{red Error: ${error.message}}`);
+    console.error(chalk`{red Error: ${(error as Error).message}}`);
     console.error('Init failed.');
   }
 }

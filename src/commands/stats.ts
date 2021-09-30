@@ -62,6 +62,6 @@ export async function showStats(options?: Partial<ShowStatsOptions>) {
   } catch (error) {
     spinner.stop();
     process.exitCode = -1;
-    console.error(chalk`{red Error while showing stats: ${error.message}}`);
+    console.error(chalk`{red Error while showing stats: ${(error as Error).message}}`);
   }
 }

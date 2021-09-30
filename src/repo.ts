@@ -56,7 +56,7 @@ export async function getRepositoryFromPackage(searchUp?: boolean): Promise<Repo
     );
     return repository;
   } catch (error) {
-    debug('Error while reading package.json:', error.toString());
+    debug('Error while reading package.json:', String(error));
     return null;
   }
 }
