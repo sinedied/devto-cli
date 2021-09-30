@@ -64,9 +64,6 @@
     "table": "^5.4.6"
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.3.5",
-    "@commitlint/config-conventional": "^8.3.4",
-    "@jedmao/semantic-release-npm-github-config": "^1.0.9",
     "@types/debug": "^4.1.5",
     "@types/fs-extra": "^8.1.0",
     "@types/got": "^9.6.10",
@@ -121,11 +118,6 @@
     ],
     "verbose": true
   },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
   "lint-staged": {
     "*.js": [
       "xo --fix",
@@ -139,8 +131,7 @@
   },
   "husky": {
     "hooks": {
-      "precommit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "precommit": "lint-staged"
     }
   },
   "release": {
