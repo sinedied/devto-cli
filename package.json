@@ -22,7 +22,8 @@
     "test:watch": "jest --watch",
     "clean": "rm -rf lib *.tgz",
     "commit": "git-cz",
-    "release:check": "semantic-release --dry-run"
+    "release:check": "semantic-release --dry-run",
+    "prepare": "husky install"
   },
   "keywords": [
     "cli",
@@ -73,7 +74,7 @@
     "@types/table": "^5.0.0",
     "commitizen": "^4.1.2",
     "cz-conventional-changelog": "^3.2.0",
-    "husky": "^4.2.5",
+    "husky": "^7.0.0",
     "jest": "^25.5.4",
     "lint-staged": "^10.2.2",
     "semantic-release": "^17.0.7",
@@ -128,11 +129,6 @@
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "precommit": "lint-staged"
     }
   },
   "release": {
