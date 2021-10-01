@@ -5,6 +5,7 @@ const debug = Debug('spinner');
 
 export function createSpinner(debugFunc: Debugger) {
   if (debug.enabled) {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     const noop = () => {};
     return {
       set text(string: string) {

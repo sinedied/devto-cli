@@ -1,8 +1,8 @@
 import Debug from 'debug';
-import got, { RequestError } from 'got';
+import got, { Got, RequestError } from 'got';
 import matter from 'gray-matter';
 import pThrottle from 'p-throttle';
-import { Article } from './article';
+import { Article, RemoteArticleData, ArticleStats } from './models.js';
 
 const debug = Debug('devto');
 const apiUrl = 'https://dev.to/api';
@@ -10,32 +10,8 @@ const paginationLimit = 1000;
 
 // There's a limit of 10 articles created each 30 seconds by the same user,
 // so we need to throttle the API calls in that case.
-const throttledPostForCreate = pThrottle(got.post, 10, 30500);
-
-// This is a partial interface just enough for our needs
-export interface RemoteArticleData {
-  id: number;
-  title: string;
-  description: string;
-  cover_image: string;
-  tag_list: string[];
-  canonical_url: string;
-  url: string;
-  published: boolean;
-  published_at: string;
-  body_markdown: string;
-  page_views_count: number;
-  positive_reactions_count: number;
-  comments_count: number;
-}
-
-export interface ArticleStats {
-  date: string;
-  title: string;
-  views: number;
-  reactions: number;
-  comments: number;
-}
+// The insane type casting is due to typing issues with p-throttle.
+const throttledPostForCreate = pThrottle({ limit: 10, interval: 30_500 })(got.post) as any as Got['post'];
 
 export async function getAllArticles(devtoKey: string): Promise<RemoteArticleData[]> {
   try {
@@ -97,13 +73,13 @@ export async function updateRemoteArticle(article: Article, devtoKey: string): P
     const markdown = matter.stringify(article, article.data, { lineWidth: -1 } as any);
     const { id } = article.data;
     // Throttle API calls in case of article creation
-    const get: any = id ? got.put : throttledPostForCreate;
+    const get = id ? got.put : throttledPostForCreate;
     const result = await get(`${apiUrl}/articles${id ? `/${id}` : ''}`, {
       headers: { 'api-key': devtoKey },
       json: { article: { title: article.data.title, body_markdown: markdown } },
       responseType: 'json'
     });
-    return result.body;
+    return result.body as RemoteArticleData;
   } catch (error) {
     if (error instanceof RequestError && error.response) {
       debug('Debug infos: %O', error.response.body);

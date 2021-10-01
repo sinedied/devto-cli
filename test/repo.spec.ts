@@ -1,4 +1,7 @@
-import path from 'path';
+import process from 'process';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { jest } from '@jest/globals';
 import {
   getShorthandString,
   parseRepository,
@@ -11,12 +14,17 @@ import {
 jest.mock('execa');
 jest.mock('hasbin');
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 const resetEnv = () => {
   process.env.DEVTO_REPO = undefined;
 };
 
-const resetCwd = () => process.chdir(path.join(__dirname, '..'));
-const mockHasbin = (result: boolean) => (_: string, cb: Function) => cb(result);
+const resetCwd = () => {
+  process.chdir(path.join(__dirname, '..'));
+};
+
+const mockHasbin = (result: boolean) => (_: string, cb: (result: boolean) => boolean) => cb(result);
 
 describe('repository methods', () => {
   describe('getShorthandString', () => {
@@ -71,15 +79,15 @@ describe('repository methods', () => {
 
   describe('getRepositoryFromGit', () => {
     it('should return null if git is not installed', async () => {
-      const hasbin = require('hasbin');
+      const hasbin: any = await import('hasbin');
       hasbin.mockImplementation(mockHasbin(false));
 
       expect(await getRepositoryFromGit()).toBe(null);
     });
 
     it('should return null if git returned an error', async () => {
-      const hasbin = require('hasbin');
-      const execa = require('execa');
+      const hasbin: any = await import('hasbin');
+      const execa: any = await import('execa');
       hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(() => {
         throw new Error('git error');
@@ -89,8 +97,8 @@ describe('repository methods', () => {
     });
 
     it('should get repo from git', async () => {
-      const hasbin = require('hasbin');
-      const execa = require('execa');
+      const hasbin: any = await import('hasbin');
+      const execa: any = await import('execa');
       hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(async () => ({ stdout: 'git@github.com:user/repo.git' }));
 
@@ -138,8 +146,8 @@ describe('repository methods', () => {
     });
 
     it('should get repo from git', async () => {
-      const hasbin = require('hasbin');
-      const execa = require('execa');
+      const hasbin: any = await import('hasbin');
+      const execa: any = await import('execa');
       hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(async () => ({ stdout: 'git@github.com:user/repo.git' }));
 
@@ -147,14 +155,14 @@ describe('repository methods', () => {
     });
 
     it('should get repo from package', async () => {
-      const hasbin = require('hasbin');
+      const hasbin: any = await import('hasbin');
       hasbin.mockImplementation(mockHasbin(false));
 
       expect(await getRepository('')).toEqual({ user: 'sinedied', name: 'devto-cli' });
     });
 
     it('should return null', async () => {
-      const hasbin = require('hasbin');
+      const hasbin: any = await import('hasbin');
       hasbin.mockImplementation(mockHasbin(false));
       process.chdir('test');
 

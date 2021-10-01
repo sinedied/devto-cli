@@ -1,7 +1,4 @@
-
-
-
-// describe('articles', () => {
+// Describe('articles', () => {
 //   describe('convertPathToPosix', () => {
 //     it('should convert a windows path', () => {
 //       expect(convertPathToPosix('c:\\test\\path')).toEqual('c:/test/path');

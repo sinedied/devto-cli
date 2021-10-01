@@ -1,9 +1,10 @@
+import process from 'process';
 import Debug from 'debug';
 import chalk from 'chalk';
 import { table } from 'table';
-import { getLastArticlesStats } from '../api';
-import { scaleNumber } from '../util';
-import { createSpinner } from '../spinner';
+import { getLastArticlesStats } from '../api.js';
+import { scaleNumber } from '../util.js';
+import { createSpinner } from '../spinner.js';
 
 const debug = Debug('init');
 
@@ -20,9 +21,10 @@ export async function showStats(options?: Partial<ShowStatsOptions>) {
 
   if (!options.devtoKey) {
     process.exitCode = -1;
-    return console.error(
+    console.error(
       chalk`{red No dev.to API key provided.}\nUse {bold --token} option or {bold .env} file to provide one.`
     );
+    return;
   }
 
   const spinner = createSpinner(debug);
@@ -34,11 +36,13 @@ export async function showStats(options?: Partial<ShowStatsOptions>) {
     spinner.stop();
 
     if (stats.length === 0) {
-      return console.info(`No published articles found.`);
+      console.info(`No published articles found.`);
+      return;
     }
 
     if (options.json) {
-      return console.info(stats);
+      console.info(stats);
+      return;
     }
 
     const remainingWidth = 42; // <- obviously :)

@@ -1,41 +1,21 @@
-import Debug from 'debug';
 import path from 'path';
+import Debug from 'debug';
 import fs from 'fs-extra';
-import globby from 'globby';
+import { globby } from 'globby';
 import matter from 'gray-matter';
 import slugify from 'slugify';
 import got, { RequestError } from 'got';
 import pMap from 'p-map';
-import { updateRelativeImageUrls, getImageUrls } from './util';
-import { Repository } from './repo';
-import { RemoteArticleData } from './api';
+import { updateRelativeImageUrls, getImageUrls } from './util.js';
+import { Article, ArticleMetadata, RemoteArticleData, Repository } from './models.js';
 
 const debug = Debug('article');
 export const defaultArticlesFolder = 'posts';
 
-export type ArticleMetadata = Partial<{
-  [key: string]: string | string[] | boolean | number | null;
-  title: string | null;
-  description: string | null;
-  cover_image: string | null;
-  tags: string | string[] | null;
-  canonical_url: string | null;
-  published: boolean | null;
-  id: number | null;
-  date: string | null;
-}>;
-
-export interface Article {
-  file: string | null;
-  data: ArticleMetadata;
-  content: string;
-  hasChanged?: boolean;
-}
-
 export async function getArticlesFromFiles(filesGlob: string[]): Promise<Article[]> {
-  const files = await globby(filesGlob);
+  const files: string[] = await globby(filesGlob);
   const articles = await Promise.all(files.map(getArticleFromFile));
-  return articles.filter(article => article !== null) as Article[];
+  return articles.filter((article) => article !== null) as Article[];
 }
 
 async function getArticleFromFile(file: string): Promise<Article | null> {
@@ -107,7 +87,7 @@ export async function saveArticleToFile(article: Article) {
     await fs.writeFile(article.file, markdown);
     debug('Saved article "%s" to file "%s"', article.data.title, article.file);
   } catch (error) {
-    throw new Error(`Cannot write to file "${article.file}": ${error}`);
+    throw new Error(`Cannot write to file "${article.file ?? ''}": ${String(error)}`);
   }
 }
 
@@ -182,7 +162,7 @@ export function checkIfArticleNeedsUpdate(remoteArticles: Article[], article: Ar
 
   const remoteArticle = remoteArticles.find((a) => a.data.id === article.data.id);
   if (!remoteArticle) {
-    throw new Error(`Cannot find published article on dev.to: ${article.data.title}`);
+    throw new Error(`Cannot find published article on dev.to: ${article.data.title ?? '<no title>'}`);
   }
 
   return !areArticlesEqual(remoteArticle, article);

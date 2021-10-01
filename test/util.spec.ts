@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { convertPathToPosix, updateRelativeImageUrls, getImageUrls, scaleNumber, replaceInFile } from '../src/util';
 
 jest.mock('fs-extra');
@@ -81,21 +82,21 @@ describe('utilities', () => {
     });
 
     it('should scale to K and round number', () => {
-      expect(scaleNumber(12365)).toEqual('12.4K');
+      expect(scaleNumber(12_365)).toEqual('12.4K');
     });
 
     it('should scale to G and round number', () => {
-      expect(scaleNumber(1234567890)).toEqual('1.23G');
+      expect(scaleNumber(1_234_567_890)).toEqual('1.23G');
     });
 
     it('should scale to K and round number with specified length', () => {
-      expect(scaleNumber(12365, 6)).toEqual('12.37K');
+      expect(scaleNumber(12_365, 6)).toEqual('12.37K');
     });
   });
 
   describe('replaceInFile', () => {
     it('should replace string in file', async () => {
-      const fs = require('fs-extra');
+      const fs: any = await import('fs-extra');
       fs.readFile.mockImplementation(async () => 'Lorem ipsum dolor sit amet');
       await replaceInFile('dummy.md', 'ipsum', 'replaced');
 

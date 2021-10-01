@@ -1,2 +1,5 @@
 #!/usr/bin/env node
-require('../lib/cli').run(process.argv.slice(2));
+import process from 'process';
+import { run } from '../lib/cli.js';
+
+run(process.argv.slice(2));

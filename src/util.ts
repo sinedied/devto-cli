@@ -1,8 +1,8 @@
 import path from 'path';
+import process from 'process';
 import { createInterface } from 'readline';
 import fs from 'fs-extra';
-import { Repository } from './repo';
-import { Article } from './article';
+import { Article, Repository } from './models.js';
 
 const hostUrl = 'https://raw.githubusercontent.com';
 const relativeImageRegex = /!\[(.*)]\((?!.*?:\/\/)([^ ]*?) *?( (?:'.*'|".*"))? *?\)/g;
@@ -17,7 +17,7 @@ const getFullImagePath = (basePath: string, imagePath: string): string =>
 export function updateRelativeImageUrls(article: Article, repository: Repository): Article {
   const data = { ...article.data };
   let { content } = article;
-  const basePath = path.dirname(article.file as string);
+  const basePath = path.dirname(article.file!);
   let match;
 
   while ((match = relativeImageRegex.exec(article.content))) {
@@ -77,7 +77,7 @@ export function scaleNumber(number: number, maxLength = 5): string {
   return result + suffix[index];
 }
 
-export function prompt(question: string): Promise<string> {
+export async function prompt(question: string): Promise<string> {
   const read = createInterface({ input: process.stdin, output: process.stdout });
   // eslint-disable-next-line promise/param-names
   return new Promise((resolve, _) => {

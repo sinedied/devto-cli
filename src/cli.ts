@@ -1,8 +1,13 @@
+import process from 'process';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import debug from 'debug';
 import minimist from 'minimist';
 import dotenv from 'dotenv';
-import { init, createNew, push, showStats } from './commands';
+import fs from 'fs-extra';
+import { init, createNew, push, showStats } from './commands/index.js';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const help = `Usage: devto <init|new|push|stats> [options]
 
 Commands:
@@ -44,12 +49,14 @@ export async function run(args: string[]) {
   });
 
   if (options.version) {
-    const pkg = require('../package.json');
-    return console.info(pkg.version);
+    const pkg = await fs.readJSON(path.join(__dirname, '../package.json'));
+    console.info(pkg.version);
+    return;
   }
 
   if (options.help) {
-    return console.info(help);
+    console.info(help);
+    return;
   }
 
   if (options.verbose) {
@@ -91,6 +98,6 @@ export async function run(args: string[]) {
         json: options.json
       });
     default:
-      return console.log(help);
+      console.log(help);
   }
 }

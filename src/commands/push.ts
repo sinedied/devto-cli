@@ -1,9 +1,9 @@
+import process from 'process';
 import Debug from 'debug';
 import chalk from 'chalk';
 import { table, getBorderCharacters } from 'table';
 import pMap from 'p-map';
 import {
-  Article,
   getArticlesFromFiles,
   getArticlesFromRemoteData,
   prepareArticleForDevto,
@@ -12,11 +12,12 @@ import {
   saveArticleToFile,
   reconcileLocalArticles,
   checkArticleForOfflineImages
-} from '../article';
-import { getAllArticles, updateRemoteArticle } from '../api';
-import { Repository, getRepository } from '../repo';
-import { SyncStatus, PublishedStatus } from '../status';
-import { createSpinner } from '../spinner';
+} from '../article.js';
+import { getAllArticles, updateRemoteArticle } from '../api.js';
+import { getRepository } from '../repo.js';
+import { SyncStatus, PublishedStatus } from '../status.js';
+import { createSpinner } from '../spinner.js';
+import { Article, Repository } from '../models.js';
 
 const debug = Debug('push');
 
@@ -119,9 +120,10 @@ export async function push(files: string[], options?: Partial<PushOptions>) {
 
   if (!options.devtoKey) {
     process.exitCode = -1;
-    return console.error(
+    console.error(
       chalk`{red No dev.to API key provided.}\nUse {bold --token} option or {bold .env} file to provide one.`
     );
+    return;
   }
 
   if (options.dryRun) {
@@ -134,9 +136,10 @@ export async function push(files: string[], options?: Partial<PushOptions>) {
     const repository = await getRepository(options.repo);
     if (!repository) {
       process.exitCode = -1;
-      return console.error(
+      console.error(
         chalk`{red No GitHub repository provided.}\nUse {bold --repo} option or {bold .env} file to provide one.`
       );
+      return;
     }
 
     let articles = await getArticlesFromFiles(files);

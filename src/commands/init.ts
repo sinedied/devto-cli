@@ -1,27 +1,30 @@
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import process from 'process';
 import Debug from 'debug';
-import path from 'path';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import {
-  Article,
   defaultArticlesFolder,
   getArticlesFromRemoteData,
   generateArticleFilename,
   saveArticleToFile,
   createNewArticle
-} from '../article';
-import { getAllArticles } from '../api';
-import { prompt, replaceInFile } from '../util';
+} from '../article.js';
+import { getAllArticles } from '../api.js';
+import { prompt, replaceInFile } from '../util.js';
 import {
   getRepositoryFromStringOrEnv,
   parseRepository,
   getShorthandString,
   hasGitInstalled,
   initGitRepository
-} from '../repo';
-import { createSpinner } from '../spinner';
+} from '../repo.js';
+import { createSpinner } from '../spinner.js';
+import { Article } from '../models.js';
 
 const debug = Debug('init');
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 interface InitOptions {
   pull: boolean;
@@ -65,9 +68,10 @@ export async function init(options?: Partial<InitOptions>) {
 
   if (options.pull && !options.devtoKey) {
     process.exitCode = -1;
-    return console.error(
+    console.error(
       chalk`{red No dev.to API key provided.}\nUse {bold --token} option or {bold .env} file to provide one.`
     );
+    return;
   }
 
   const spinner = createSpinner(debug);

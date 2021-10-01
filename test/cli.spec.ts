@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { run } from '../src/cli';
 
 jest.mock('../src/commands');
@@ -5,9 +6,10 @@ jest.mock('../src/commands');
 function mockConsole() {
   const methods = ['log', 'info', 'warn', 'error'];
   const originalConsole = { ...console };
-  methods.forEach((method) => {
+  for (const method of methods) {
     (console as any)[method] = jest.fn();
-  });
+  }
+
   return () => {
     global.console = originalConsole;
   };
@@ -35,7 +37,7 @@ describe('devto CLI', () => {
   });
 
   it('should run init command', async () => {
-    const { init } = require('../src/commands');
+    const { init } = await import('../src/commands');
     await run(['init', '--token=123', '--repo=git/repo', '--pull', '--skip-git']);
     expect(init).toHaveBeenCalledWith({
       devtoKey: '123',
@@ -46,7 +48,7 @@ describe('devto CLI', () => {
   });
 
   it('should run push command', async () => {
-    const { push } = require('../src/commands');
+    const { push } = await import('../src/commands');
     await run(['push', 'posts/*.md', '--token=123', '--repo=git/repo', '--dry-run', '--reconcile', '--check-img']);
     expect(push).toHaveBeenCalledWith(['posts/*.md'], {
       devtoKey: '123',
@@ -58,13 +60,13 @@ describe('devto CLI', () => {
   });
 
   it('should run new command', async () => {
-    const { createNew } = require('../src/commands');
+    const { createNew } = await import('../src/commands');
     await run(['new', 'article']);
     expect(createNew).toHaveBeenCalledWith('article');
   });
 
   it('should run stats command', async () => {
-    const { showStats } = require('../src/commands');
+    const { showStats } = await import('../src/commands');
     await run(['stats', '--token=123', '--number=20']);
     expect(showStats).toHaveBeenCalledWith({
       devtoKey: '123',

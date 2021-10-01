@@ -1,27 +1,27 @@
+import process from 'process';
 import Debug from 'debug';
 import fs from 'fs-extra';
-import findUp from 'find-up';
+import { findUp } from 'find-up';
 import hasbin from 'hasbin';
 import execa from 'execa';
-
-export interface Repository {
-  user: string;
-  name: string;
-}
+import { Repository } from './models.js';
 
 const debug = Debug('repo');
 const repositoryRegex = /.*[/:](.*)\/(.*)\.git|^([^/]*)\/([^/]*)$/;
 const packageFile = 'package.json';
 
 export const getShorthandString = (repo: Repository) => `${repo.user}/${repo.name}`;
-export const hasGitInstalled = async () => new Promise((resolve) => hasbin('git', resolve));
+export const hasGitInstalled = async () =>
+  new Promise((resolve) => {
+    hasbin('git', resolve);
+  });
 
 export function parseRepository(string?: string): Repository | null {
   if (!string) {
     return null;
   }
 
-  const match = string.match(repositoryRegex);
+  const match = repositoryRegex.exec(string);
   if (!match) {
     return null;
   }
@@ -34,7 +34,7 @@ export function parseRepository(string?: string): Repository | null {
 }
 
 export async function getRepositoryFromPackage(searchUp?: boolean): Promise<Repository | null> {
-  let pkgPath = null;
+  let pkgPath: string | undefined;
 
   if (searchUp) {
     pkgPath = await findUp(packageFile);
@@ -48,8 +48,8 @@ export async function getRepositoryFromPackage(searchUp?: boolean): Promise<Repo
   }
 
   try {
-    const pkg = await fs.readJson(pkgPath);
-    const repository = parseRepository((pkg.repository && pkg.repository.url) || pkg.repository);
+    const pkg: any = await fs.readJson(pkgPath);
+    const repository = parseRepository(pkg.repository?.url ?? pkg.repository);
     debug(
       repository ? 'Repository found in package.json: ' : 'No repository found in package.json',
       repository ? getShorthandString(repository) : ''
@@ -76,7 +76,7 @@ export async function getRepositoryFromGit(): Promise<Repository | null> {
     );
     return repository;
   } catch (error) {
-    debug(`Git error: ${error}`);
+    debug(`Git error: ${String(error as Error)}`);
     return null;
   }
 }
@@ -96,6 +96,6 @@ export async function initGitRepository() {
     await execa('git', ['init']);
     debug('Git repository initialized');
   } catch (error) {
-    debug(`Git error: ${error}`);
+    debug(`Git error: ${String(error as Error)}`);
   }
 }
