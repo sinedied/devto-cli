@@ -9,21 +9,11 @@ jest.unstable_mockModule('fs-extra', () => ({
   }
 }));
 
+const { convertPathToPosix, updateRelativeImageUrls, getImageUrls, scaleNumber, replaceInFile } = await import(
+  '../src/util'
+);
+
 describe('utilities', () => {
-  let convertPathToPosix: Function;
-  let updateRelativeImageUrls: Function;
-  let getImageUrls: Function;
-  let scaleNumber: Function;
-  let replaceInFile: Function;
-
-  beforeEach(async () => {
-    convertPathToPosix = (await import('../src/util')).convertPathToPosix;
-    updateRelativeImageUrls = (await import('../src/util')).updateRelativeImageUrls;
-    getImageUrls = (await import('../src/util')).getImageUrls;
-    scaleNumber = (await import('../src/util')).scaleNumber;
-    replaceInFile = (await import('../src/util')).replaceInFile;
-  });
-
   describe('convertPathToPosix', () => {
     it('should convert a windows path', () => {
       expect(convertPathToPosix('c:\\test\\path')).toEqual('c:/test/path');

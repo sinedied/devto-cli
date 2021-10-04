@@ -13,6 +13,15 @@ jest.unstable_mockModule('hasbin', () => ({
   default: jest.fn()
 }));
 
+const {
+  getShorthandString,
+  parseRepository,
+  getRepositoryFromPackage,
+  getRepositoryFromGit,
+  getRepositoryFromStringOrEnv,
+  getRepository
+} = await import('../src/repo');
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const resetEnv = () => {
@@ -26,22 +35,6 @@ const resetCwd = () => {
 const mockHasbin = (result: boolean) => (_: string, cb: (result: boolean) => boolean) => cb(result);
 
 describe('repository methods', () => {
-  let getShorthandString: Function;
-  let parseRepository: Function;
-  let getRepositoryFromPackage: Function;
-  let getRepositoryFromGit: Function;
-  let getRepositoryFromStringOrEnv: Function;
-  let getRepository: Function;
-
-  beforeEach(async () => {
-    getShorthandString = (await import('../src/repo')).getShorthandString;
-    parseRepository = (await import('../src/repo')).parseRepository;
-    getRepositoryFromPackage = (await import('../src/repo')).getRepositoryFromPackage;
-    getRepositoryFromGit = (await import('../src/repo')).getRepositoryFromGit;
-    getRepositoryFromStringOrEnv = (await import('../src/repo')).getRepositoryFromStringOrEnv;
-    getRepository = (await import('../src/repo')).getRepository;
-  });
-
   describe('getShorthandString', () => {
     it('should return shorthand string', () => {
       expect(getShorthandString({ user: 'user', name: 'repo' })).toEqual('user/repo');

@@ -9,6 +9,8 @@ jest.unstable_mockModule('../src/commands', () => ({
   showStats: jest.fn()
 }));
 
+const { run } = await import('../src/cli');
+
 function mockConsole() {
   const methods = ['log', 'info', 'warn', 'error'];
   const originalConsole = { ...console };
@@ -23,11 +25,9 @@ function mockConsole() {
 
 describe('devto CLI', () => {
   let restoreConsole: Function;
-  let run: Function;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     restoreConsole = mockConsole();
-    run = (await import('../src/cli')).run;
   });
 
   afterEach(() => {
