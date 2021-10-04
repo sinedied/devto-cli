@@ -82,7 +82,7 @@
     "semantic-release": "^18.0.0",
     "semantic-release-npm-github": "^2.0.0",
     "ts-jest": "^27.0.5",
-    "xo": "^0.44.0"
+    "xo": "^0.45.0"
   },
   "prettier": {
     "trailingComma": "none",
@@ -102,6 +102,7 @@
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-unsafe-call": "off",
       "@typescript-eslint/ban-types": "off",
+      "@typescript-eslint/naming-convention": "off",
       "node/no-unsupported-features/es-syntax": "off",
       "unicorn/prefer-node-protocol": "off",
       "unicorn/no-array-callback-reference": "off",
