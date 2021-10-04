@@ -31,8 +31,8 @@ interface PushOptions {
 
 interface PushResult {
   article: Article;
-  status: string; // TODO
-  publishedStatus: string; // TODO
+  status: string;
+  publishedStatus: string;
 }
 
 function showResults(results: PushResult[]) {

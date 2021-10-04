@@ -103,7 +103,6 @@
       "@typescript-eslint/no-unsafe-call": "off",
       "@typescript-eslint/ban-types": "off",
       "@typescript-eslint/naming-convention": "off",
-      "node/no-unsupported-features/es-syntax": "off",
       "unicorn/prefer-node-protocol": "off",
       "unicorn/no-array-callback-reference": "off",
       "camelcase": [
@@ -130,9 +129,7 @@
             "Debug"
           ]
         }
-      ],
-      "unicorn/no-fn-reference-in-iterator": "off",
-      "accessor-pairs": "off"
+      ]
     },
     "ignores": [
       "test/mocks/**/*"
