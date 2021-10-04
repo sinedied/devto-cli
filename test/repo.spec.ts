@@ -1,18 +1,17 @@
 import process from 'process';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
-import {
-  getShorthandString,
-  parseRepository,
-  getRepositoryFromPackage,
-  getRepositoryFromGit,
-  getRepositoryFromStringOrEnv,
-  getRepository
-} from '../src/repo';
 
-jest.mock('execa');
-jest.mock('hasbin');
+jest.unstable_mockModule('execa', () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+jest.unstable_mockModule('hasbin', () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -27,6 +26,22 @@ const resetCwd = () => {
 const mockHasbin = (result: boolean) => (_: string, cb: (result: boolean) => boolean) => cb(result);
 
 describe('repository methods', () => {
+  let getShorthandString: Function;
+  let parseRepository: Function;
+  let getRepositoryFromPackage: Function;
+  let getRepositoryFromGit: Function;
+  let getRepositoryFromStringOrEnv: Function;
+  let getRepository: Function;
+
+  beforeEach(async () => {
+    getShorthandString = (await import('../src/repo')).getShorthandString;
+    parseRepository = (await import('../src/repo')).parseRepository;
+    getRepositoryFromPackage = (await import('../src/repo')).getRepositoryFromPackage;
+    getRepositoryFromGit = (await import('../src/repo')).getRepositoryFromGit;
+    getRepositoryFromStringOrEnv = (await import('../src/repo')).getRepositoryFromStringOrEnv;
+    getRepository = (await import('../src/repo')).getRepository;
+  });
+
   describe('getShorthandString', () => {
     it('should return shorthand string', () => {
       expect(getShorthandString({ user: 'user', name: 'repo' })).toEqual('user/repo');
@@ -79,15 +94,15 @@ describe('repository methods', () => {
 
   describe('getRepositoryFromGit', () => {
     it('should return null if git is not installed', async () => {
-      const hasbin: any = await import('hasbin');
+      const hasbin: any = (await import('hasbin')).default;
       hasbin.mockImplementation(mockHasbin(false));
 
       expect(await getRepositoryFromGit()).toBe(null);
     });
 
     it('should return null if git returned an error', async () => {
-      const hasbin: any = await import('hasbin');
-      const execa: any = await import('execa');
+      const hasbin: any = (await import('hasbin')).default;
+      const execa: any = (await import('execa')).default;
       hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(() => {
         throw new Error('git error');
@@ -97,8 +112,8 @@ describe('repository methods', () => {
     });
 
     it('should get repo from git', async () => {
-      const hasbin: any = await import('hasbin');
-      const execa: any = await import('execa');
+      const hasbin: any = (await import('hasbin')).default;
+      const execa: any = (await import('execa')).default;
       hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(async () => ({ stdout: 'git@github.com:user/repo.git' }));
 
@@ -146,8 +161,8 @@ describe('repository methods', () => {
     });
 
     it('should get repo from git', async () => {
-      const hasbin: any = await import('hasbin');
-      const execa: any = await import('execa');
+      const hasbin: any = (await import('hasbin')).default;
+      const execa: any = (await import('execa')).default;
       hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(async () => ({ stdout: 'git@github.com:user/repo.git' }));
 
@@ -155,14 +170,14 @@ describe('repository methods', () => {
     });
 
     it('should get repo from package', async () => {
-      const hasbin: any = await import('hasbin');
+      const hasbin: any = (await import('hasbin')).default;
       hasbin.mockImplementation(mockHasbin(false));
 
       expect(await getRepository('')).toEqual({ user: 'sinedied', name: 'devto-cli' });
     });
 
     it('should return null', async () => {
-      const hasbin: any = await import('hasbin');
+      const hasbin: any = (await import('hasbin')).default;
       hasbin.mockImplementation(mockHasbin(false));
       process.chdir('test');
 

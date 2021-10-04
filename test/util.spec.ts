@@ -1,9 +1,29 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
-import { convertPathToPosix, updateRelativeImageUrls, getImageUrls, scaleNumber, replaceInFile } from '../src/util';
 
-jest.mock('fs-extra');
+jest.unstable_mockModule('fs-extra', () => ({
+  __esModule: true,
+  default: {
+    writeFile: jest.fn(),
+    readFile: jest.fn()
+  }
+}));
 
 describe('utilities', () => {
+  let convertPathToPosix: Function;
+  let updateRelativeImageUrls: Function;
+  let getImageUrls: Function;
+  let scaleNumber: Function;
+  let replaceInFile: Function;
+
+  beforeEach(async () => {
+    convertPathToPosix = (await import('../src/util')).convertPathToPosix;
+    updateRelativeImageUrls = (await import('../src/util')).updateRelativeImageUrls;
+    getImageUrls = (await import('../src/util')).getImageUrls;
+    scaleNumber = (await import('../src/util')).scaleNumber;
+    replaceInFile = (await import('../src/util')).replaceInFile;
+  });
+
   describe('convertPathToPosix', () => {
     it('should convert a windows path', () => {
       expect(convertPathToPosix('c:\\test\\path')).toEqual('c:/test/path');
@@ -96,7 +116,7 @@ describe('utilities', () => {
 
   describe('replaceInFile', () => {
     it('should replace string in file', async () => {
-      const fs: any = await import('fs-extra');
+      const fs: any = (await import('fs-extra')).default;
       fs.readFile.mockImplementation(async () => 'Lorem ipsum dolor sit amet');
       await replaceInFile('dummy.md', 'ipsum', 'replaced');
 

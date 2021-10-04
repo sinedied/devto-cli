@@ -1,7 +1,13 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
-import { run } from '../src/cli';
 
-jest.mock('../src/commands');
+jest.unstable_mockModule('../src/commands', () => ({
+  __esModule: true,
+  init: jest.fn(),
+  push: jest.fn(),
+  createNew: jest.fn(),
+  showStats: jest.fn()
+}));
 
 function mockConsole() {
   const methods = ['log', 'info', 'warn', 'error'];
@@ -17,9 +23,11 @@ function mockConsole() {
 
 describe('devto CLI', () => {
   let restoreConsole: Function;
+  let run: Function;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     restoreConsole = mockConsole();
+    run = (await import('../src/cli')).run;
   });
 
   afterEach(() => {
