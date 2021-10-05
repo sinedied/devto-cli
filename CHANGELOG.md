@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/sinedied/devto-cli/compare/1.0.0...1.0.1) (2021-10-05)
+
+
+### Bug Fixes
+
+* expose push command results ([c6a5299](https://github.com/sinedied/devto-cli/commit/c6a5299f9094208896cb03384120160383162822))
+
 # 1.0.0 (2021-10-05)
 
 
