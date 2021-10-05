@@ -1,5 +1,5 @@
 {
-  "name": "devto-cli",
+  "name": "@sinedied/devto-cli",
   "version": "0.0.0",
   "description": "Dev.to authoring CLI to create and publish markdown files as articles, using assets hosted on GitHub.",
   "type": "module",

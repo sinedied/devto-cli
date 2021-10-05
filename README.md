@@ -1,8 +1,8 @@
 # :postbox: devto-cli
 
-[![NPM version](https://img.shields.io/npm/v/devto-cli.svg)](https://www.npmjs.com/package/devto-cli)
+[![NPM version](https://img.shields.io/npm/v/@sinedied/devto-cli.svg)](https://www.npmjs.com/package/@sinedied/devto-cli)
 [![Build Status](https://github.com/sinedied/devto-cli/workflows/build/badge.svg)](https://github.com/sinedied/devto-cli/actions)
-![Node version](https://img.shields.io/node/v/devto-cli.svg)
+![Node version](https://img.shields.io/node/v/@sinedied/devto-cli.svg)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -25,9 +25,9 @@
 
 ## Installation
 
-`npm install -g devto-cli`
+`npm install -g @sinedied/devto-cli`
 
-If you only want to synchronize a GitHub repository with dev.to, you can follow this [quickstart tutorial](#create-a-new-github-repository-synchronized-with-dev.to) and use `npx devto-cli init` without installing the CLI.
+If you only want to synchronize a GitHub repository with dev.to, you can follow this [quickstart tutorial](#create-a-new-github-repository-synchronized-with-dev.to) and use `npx @sinedied/devto-cli init` without installing the CLI.
 
 ## Usage
 
