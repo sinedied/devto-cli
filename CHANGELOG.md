@@ -1,3 +1,5 @@
+## [1.0.2](https://github.com/sinedied/devto-cli/compare/1.0.1...1.0.2) (2021-10-05)
+
 ## [1.0.1](https://github.com/sinedied/devto-cli/compare/1.0.0...1.0.1) (2021-10-05)
 
 
