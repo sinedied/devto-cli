@@ -191,3 +191,5 @@ Alternatively, instead of using the template, you can start from scratch with th
 ## Related
 
 This CLI was heavily inspired by the [dev-to-git](https://github.com/maxime1992/dev-to-git). I used in fact `dev-to-git` for some time, but ultimately wanted something more flexible and easier to use and setup without the need for config files. I also wanted full automation support in a GitHub Action, leading me to create this new tool.
+
+The [publish-devto](https://github.com/sinedied/publish-devto) GitHub action use this CLI under the hood to provide a single step dev.to publish workflow with GitHub Actions.
