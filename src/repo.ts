@@ -91,11 +91,20 @@ export async function getRepository(string?: string, searchPackageUp = true): Pr
   );
 }
 
+export async function isGitRepository() {
+  return (await hasGitInstalled()) && fs.pathExists('.git');
+}
+
 export async function initGitRepository() {
   try {
     await execa('git', ['init']);
     debug('Git repository initialized');
-    // TODO: set git main branch if not already inited
+
+    const currentBranch = await getCurrentBranchFromGit();
+    if (currentBranch !== 'main') {
+      await execa('git', ['branch', '-M', 'main']);
+      debug('Git: renamed branch to "main"');
+    }
   } catch (error) {
     debug(`Git error: ${String(error as Error)}`);
   }
