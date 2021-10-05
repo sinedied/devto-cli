@@ -1,5 +1,5 @@
 # This workflow will publish or update articles on dev.to each time a new
-# commit is pushed to the master branch.
+# commit is pushed to the main branch.
 #
 # To make it work, you need:
 # - A dev.to API key, see: https://docs.dev.to/api/#section/Authentication/api_key
@@ -16,7 +16,7 @@
 name: publish
 on:
   push:
-    branches: [master]
+    branches: [BRANCH]
 
 jobs:
   publish:
@@ -29,10 +29,11 @@ jobs:
         node-version: 14
 
     - name: Publish articles on dev.to
-      uses: sinedied/publish-devto@v1
+      uses: sinedied/publish-devto@v2
       with:
         repository: USERNAME/REPO
+        branch: BRANCH
         files_glob: 'posts/**/*.md'
         devto_key: ${{ secrets.DEVTO_TOKEN }}
         github_token: ${{ secrets.GH_TOKEN }}
-        conventional_commits: false
+        conventional_commits: true
