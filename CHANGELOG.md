@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/sinedied/devto-cli/compare/1.0.4...1.0.5) (2021-10-05)
+
+
+### Bug Fixes
+
+* missing build ([ea105ae](https://github.com/sinedied/devto-cli/commit/ea105ae0e913313f724349cefb79f8f12ea42303))
+
 ## [1.0.4](https://github.com/sinedied/devto-cli/compare/1.0.3...1.0.4) (2021-10-05)
 
 
