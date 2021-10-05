@@ -21,7 +21,7 @@ import { Article, Repository } from '../models.js';
 
 const debug = Debug('push');
 
-interface PushOptions {
+export interface PushOptions {
   devtoKey: string;
   repo: string;
   branch: string;
@@ -30,7 +30,7 @@ interface PushOptions {
   checkImages: boolean;
 }
 
-interface PushResult {
+export interface PushResult {
   article: Article;
   status: string;
   publishedStatus: string;
@@ -114,7 +114,7 @@ async function processArticles(
   return pMap(localArticles, processArticle, { concurrency: 5 });
 }
 
-export async function push(files: string[], options?: Partial<PushOptions>) {
+export async function push(files: string[], options?: Partial<PushOptions>): Promise<PushResult[] | null> {
   options = options ?? {};
   files = files.length > 0 ? files : ['posts/**/*.md'];
   debug('files: %O', files);
@@ -125,7 +125,7 @@ export async function push(files: string[], options?: Partial<PushOptions>) {
     console.error(
       chalk`{red No dev.to API key provided.}\nUse {bold --token} option or {bold .env} file to provide one.`
     );
-    return;
+    return null;
   }
 
   if (options.dryRun) {
@@ -141,7 +141,7 @@ export async function push(files: string[], options?: Partial<PushOptions>) {
       console.error(
         chalk`{red No GitHub repository provided.}\nUse {bold --repo} option or {bold .env} file to provide one.`
       );
-      return;
+      return null;
     }
 
     debug('repository: %O', repository);
@@ -152,7 +152,7 @@ export async function push(files: string[], options?: Partial<PushOptions>) {
       console.error(
         chalk`{red No GitHub branch provided.}\nUse {bold --branch} option or {bold .env} file to provide one.`
       );
-      return;
+      return null;
     }
 
     debug('branch: %s', branch);
@@ -162,7 +162,7 @@ export async function push(files: string[], options?: Partial<PushOptions>) {
 
     if (articles.length === 0) {
       console.warn(chalk`No articles to push.`);
-      return;
+      return [];
     }
 
     spinner.text = 'Retrieving articles from dev.to…';
@@ -189,10 +189,13 @@ export async function push(files: string[], options?: Partial<PushOptions>) {
     if (failed) {
       process.exitCode = -1;
     }
+
+    return results;
   } catch (error) {
     spinner.stop();
     process.exitCode = -1;
     console.error(chalk`{red Error: ${(error as Error).message}}`);
     console.error('Push failed');
+    return null;
   }
 }
