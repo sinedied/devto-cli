@@ -133,7 +133,8 @@
       ]
     },
     "ignores": [
-      "test/mocks/**/*"
+      "test/mocks/**/*",
+      "test/*.spec.ts"
     ]
   },
   "jest": {
@@ -165,9 +166,9 @@
   },
   "release": {
     "extends": "semantic-release-npm-github",
-    "branch": "main"
+    "branches": "main"
   },
-  "engines__": {
+  "engines": {
     "node": "^14.13.1 || >=16.0.0",
     "npm": ">=6.0.0"
   },
