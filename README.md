@@ -27,12 +27,12 @@
 
 `npm install -g @sinedied/devto-cli`
 
-If you only want to synchronize a GitHub repository with dev.to, you can follow this [quickstart tutorial](#create-a-new-github-repository-synchronized-with-dev.to) and use `npx @sinedied/devto-cli init` without installing the CLI.
+If you only want to synchronize a GitHub repository with dev.to, you can follow this [quickstart tutorial](#create-a-new-github-repository-synchronized-with-dev.to) without installing the CLI.
 
 ## Usage
 
 ```
-Usage: devto <init|new|push|stats> [options]
+Usage: dev <init|new|push|stats> [options]
 
 Commands:
   i, init               Init current dir as an article repository
@@ -57,7 +57,7 @@ General options:
 
 ### Init
 
-`devto init` initializes the current folder as a repository for all your articles.
+`dev init` initializes the current folder as a repository for all your articles.
 
 It does 3 things:
 
@@ -71,11 +71,11 @@ There are a few more step needed to finish the setup on GitHub, see the [quickst
 
 ### New
 
-`devto new <file>` creates a new markdown file with front matter properties prepared for you.
+`dev new <file>` creates a new markdown file with front matter properties prepared for you.
 
 ### Push
 
-`devto push [files]` pushes all updates for the specified files to dev.to (`posts/***/*.md` by default, globs supported).
+`dev push [files]` pushes all updates for the specified files to dev.to (`posts/***/*.md` by default, globs supported).
 
 This command only updates articles that have changes.
 
@@ -115,7 +115,7 @@ Using the `--dry-run` option the whole push process will be executed, but withou
 
 ### Stats
 
-`devto stats` allows you to see the stats for your latest *published* articles.
+`dev stats` allows you to see the stats for your latest *published* articles.
 
 Only the latest 10 are shown by default, but you can change that number using the `--number` option.
 
