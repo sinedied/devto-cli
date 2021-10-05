@@ -102,6 +102,8 @@ export async function initGitRepository() {
 
     const currentBranch = await getCurrentBranchFromGit();
     if (currentBranch !== 'main') {
+      // Create starting point to allow branching
+      await execa('git', ['commit', '--allow-empty', '-m', 'feat: initial commit']);
       await execa('git', ['branch', '-M', 'main']);
       debug('Git: renamed branch to "main"');
     }
