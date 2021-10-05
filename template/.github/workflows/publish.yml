@@ -28,20 +28,16 @@ jobs:
     - name: Publish articles on dev.to
       uses: sinedied/publish-devto@v2
       with:
-        # The dev.to API key.
+        # Your dev.to personal API key to publish and update articles.
         # See https://docs.dev.to/api/#section/Authentication/api_key
         devto_key: ${{ secrets.DEVTO_TOKEN }}
-        # The GitHub personal access token, used to create commits for updated files.
+        # Your GitHub personal access token, used to create commits for updated files.
         # If you have a protected branch, you need to create a commit with the
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        # (Optional) The GitHub repository to use for image hosting.
-        # If not specified, the current repository will be used.
-        repository: USERNAME/REPO
-        # (Optional) The GitHub branch to use for image hosting.
-        # If not specified, the current branch will be used.
-        branch: BRANCH
         # (Optional) The files to publish. Default is "posts/**/*.md"
-        files_glob: 'posts/**/*.md'
+        files: 'posts/**/*.md'
+        # (Optional) The git branch to use. Default is 'main'.
+        branch: BRANCH
         # (Optional) Use conventional commit messages. Default is false.
         # See https://www.conventionalcommits.org. 
         conventional_commits: true
