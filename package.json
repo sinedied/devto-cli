@@ -8,7 +8,7 @@
     "url": "https://github.com/sinedied/devto-cli.git"
   },
   "exports": "./lib/cli.js",
-  "types": "./lib/index.ts",
+  "types": "./lib/index.d.ts",
   "bin": {
     "dev": "./bin/devto.js"
   },
