@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/sinedied/devto-cli/compare/1.0.3...1.0.4) (2021-10-05)
+
+
+### Bug Fixes
+
+* module exports ([ac93228](https://github.com/sinedied/devto-cli/commit/ac93228da8e2d23cd6bb2d32cd075f60ab0ecad7))
+
 ## [1.0.3](https://github.com/sinedied/devto-cli/compare/1.0.2...1.0.3) (2021-10-05)
 
 
