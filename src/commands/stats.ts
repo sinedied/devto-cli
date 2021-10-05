@@ -16,7 +16,7 @@ interface ShowStatsOptions {
 
 export async function showStats(options?: Partial<ShowStatsOptions>) {
   options = options ?? {};
-  options.number = options.number ?? 10;
+  options.number = options.number || 10;
   debug('options: %O', options);
 
   if (!options.devtoKey) {

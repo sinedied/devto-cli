@@ -72,8 +72,8 @@ function getArticleFromRemoteData(data: RemoteArticleData): Article {
   };
 }
 
-export function prepareArticleForDevto(article: Article, repository: Repository): Article {
-  return updateRelativeImageUrls(article, repository);
+export function prepareArticleForDevto(article: Article, repository: Repository, branch: string): Article {
+  return updateRelativeImageUrls(article, repository, branch);
 }
 
 export async function saveArticleToFile(article: Article) {

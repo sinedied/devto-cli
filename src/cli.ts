@@ -11,6 +11,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const help = `Usage: devto <init|new|push|stats> [options]
 
 Commands:
+  i, init               Init current dir as an article repository
+    -p, --pull          Pull your articles from dev.to
+    -s, --skip-git      Skip git repository init
+  n, new <file>         Create new article
   p, push [files]       Push articles to dev.to [default: posts/**/*.md]
     -d, --dry-run       Do not make actual changes on dev.to
     -e, --reconcile     Reconcile articles without id using their title
@@ -19,26 +23,28 @@ Commands:
     -j, --json          Format result as JSON
 
 General options:
-  -t, --token <token> Use this dev.to API token
-  -r, --repo <repo>   GitHub repository (in "user/repo" form)
-  -v, --version       Show version
-  --verbose           Show detailed logs
-  --help              Show this help
+  -t, --token <token>   Use this dev.to API token
+  -r, --repo <repo>     GitHub repository (in "user/repo" form)
+  -b, --branch <branch> GitHub branch [default: master]
+  -v, --version         Show version
+  --verbose             Show detailed logs
+  --help                Show this help
 `;
 
 export async function run(args: string[]) {
   const options = minimist(args, {
-    string: ['token', 'repo'],
-    boolean: ['help', 'version', 'reconcile', 'skip-check-images', 'json', 'pull', 'skip-git', 'verbose'],
+    string: ['token', 'repo', 'branch'],
+    boolean: ['help', 'version', 'reconcile', 'dry-run', 'json', 'pull', 'skip-git', 'skip-check-images', 'verbose'],
     alias: {
+      v: 'version',
       e: 'reconcile',
       d: 'dry-run',
       n: 'number',
       t: 'token',
-      v: 'version',
       j: 'json',
       p: 'pull',
       r: 'repo',
+      b: 'branch',
       s: 'skip-git'
     }
   });
@@ -70,6 +76,7 @@ export async function run(args: string[]) {
       return init({
         devtoKey: options.token,
         repo: options.repo,
+        branch: options.branch,
         pull: options.pull,
         skipGit: options['skip-git']
       });
@@ -81,6 +88,7 @@ export async function run(args: string[]) {
       return push(parameters, {
         devtoKey: options.token,
         repo: options.repo,
+        branch: options.branch,
         dryRun: options['dry-run'],
         reconcile: options.reconcile,
         checkImages: !options['skip-check-images']

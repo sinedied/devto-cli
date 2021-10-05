@@ -19,13 +19,17 @@ const {
   getRepositoryFromPackage,
   getRepositoryFromGit,
   getRepositoryFromStringOrEnv,
-  getRepository
+  getRepository,
+  getCurrentBranchFromGit,
+  getBranchFromStringOrEnv,
+  getBranch
 } = await import('../src/repo');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const resetEnv = () => {
-  process.env.DEVTO_REPO = undefined;
+  delete process.env.DEVTO_REPO;
+  delete process.env.DEVTO_BRANCH;
 };
 
 const resetCwd = () => {
@@ -176,6 +180,93 @@ describe('repository methods', () => {
 
       expect(await getRepository('garbage', false)).toBe(null);
       expect(await getRepository(undefined, false)).toBe(null);
+    });
+  });
+
+  describe('getCurrentBranchFromGit', () => {
+    it('should return null if git is not installed', async () => {
+      const hasbin: any = (await import('hasbin')).default;
+      hasbin.mockImplementation(mockHasbin(false));
+
+      expect(await getCurrentBranchFromGit()).toBe(null);
+    });
+
+    it('should return null if git returned an error', async () => {
+      const hasbin: any = (await import('hasbin')).default;
+      const execa: any = (await import('execa')).default;
+      hasbin.mockImplementation(mockHasbin(true));
+      execa.mockImplementation(() => {
+        throw new Error('git error');
+      });
+
+      expect(await getCurrentBranchFromGit()).toBe(null);
+    });
+
+    it('should get current branch from git', async () => {
+      const hasbin: any = (await import('hasbin')).default;
+      const execa: any = (await import('execa')).default;
+      hasbin.mockImplementation(mockHasbin(true));
+      execa.mockImplementation(async () => ({ stdout: 'main' }));
+
+      expect(await getCurrentBranchFromGit()).toEqual('main');
+    });
+  });
+
+  describe('getBranchFromStringOrEnv', () => {
+    beforeEach(resetEnv);
+    afterEach(resetEnv);
+
+    it('should get branch from string', () => {
+      expect(getBranchFromStringOrEnv('test')).toEqual('test');
+    });
+
+    it('should get branch from env', () => {
+      process.env.DEVTO_BRANCH = 'toto';
+      expect(getBranchFromStringOrEnv()).toEqual('toto');
+    });
+
+    it('should return null', () => {
+      expect(getBranchFromStringOrEnv('')).toBe(null);
+      expect(getBranchFromStringOrEnv()).toBe(null);
+      process.env.DEVTO_BRANCH = '';
+      expect(getBranchFromStringOrEnv()).toBe(null);
+    });
+  });
+
+  describe('getBranch', () => {
+    beforeEach(() => {
+      resetEnv();
+      resetCwd();
+    });
+    afterEach(() => {
+      resetEnv();
+      resetCwd();
+    });
+
+    it('should get branch from string', async () => {
+      expect(await getBranch('test')).toEqual('test');
+    });
+
+    it('should get branch from env', async () => {
+      process.env.DEVTO_BRANCH = 'main';
+      expect(await getBranch()).toEqual('main');
+    });
+
+    it('should get branch from git', async () => {
+      const hasbin: any = (await import('hasbin')).default;
+      const execa: any = (await import('execa')).default;
+      hasbin.mockImplementation(mockHasbin(true));
+      execa.mockImplementation(async () => ({ stdout: 'toto' }));
+
+      expect(await getBranch()).toEqual('toto');
+    });
+
+    it('should return null', async () => {
+      const hasbin: any = (await import('hasbin')).default;
+      hasbin.mockImplementation(mockHasbin(false));
+
+      expect(await getBranch('')).toBe(null);
+      expect(await getBranch(undefined)).toBe(null);
     });
   });
 });

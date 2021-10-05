@@ -14,7 +14,7 @@ import {
   checkArticleForOfflineImages
 } from '../article.js';
 import { getAllArticles, updateRemoteArticle } from '../api.js';
-import { getRepository } from '../repo.js';
+import { getBranch, getRepository } from '../repo.js';
 import { SyncStatus, PublishedStatus } from '../status.js';
 import { createSpinner } from '../spinner.js';
 import { Article, Repository } from '../models.js';
@@ -24,6 +24,7 @@ const debug = Debug('push');
 interface PushOptions {
   devtoKey: string;
   repo: string;
+  branch: string;
   dryRun: boolean;
   reconcile: boolean;
   checkImages: boolean;
@@ -62,10 +63,11 @@ async function processArticles(
   localArticles: Article[],
   remoteArticles: Article[],
   repository: Repository,
+  branch: string,
   options: Partial<PushOptions>
 ): Promise<PushResult[]> {
   const processArticle = async (article: Article) => {
-    let newArticle = prepareArticleForDevto(article, repository);
+    let newArticle = prepareArticleForDevto(article, repository, branch);
     const needsUpdate = checkIfArticleNeedsUpdate(remoteArticles, newArticle);
     let status = newArticle.hasChanged ? SyncStatus.reconciled : SyncStatus.upToDate;
     let updateResult = null;
@@ -142,6 +144,19 @@ export async function push(files: string[], options?: Partial<PushOptions>) {
       return;
     }
 
+    debug('repository: %O', repository);
+
+    const branch = await getBranch(options.branch);
+    if (!branch) {
+      process.exitCode = -1;
+      console.error(
+        chalk`{red No GitHub branch provided.}\nUse {bold --branch} option or {bold .env} file to provide one.`
+      );
+      return;
+    }
+
+    debug('branch: %s', branch);
+
     let articles = await getArticlesFromFiles(files);
     console.info(chalk`Found {green ${articles.length}} article(s)`);
 
@@ -160,7 +175,7 @@ export async function push(files: string[], options?: Partial<PushOptions>) {
     }
 
     spinner.text = 'Pushing articles to dev.to…';
-    const results = await processArticles(articles, remoteArticles, repository, options);
+    const results = await processArticles(articles, remoteArticles, repository, branch, options);
 
     spinner.stop();
     showResults(results);

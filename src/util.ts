@@ -10,11 +10,12 @@ const imageRegex = /!\[(.*)]\(([^ ]*?) *?( (?:'.*'|".*"))? *?\)/g;
 
 export const convertPathToPosix = (path: string): string => path.replace(/\\/g, '/');
 const isUrl = (string: string): boolean => /^https?:\/\/\w/.test(string);
-const getResourceUrl = (repository: Repository): string => `${hostUrl}/${repository.user}/${repository.name}/master/`;
+const getResourceUrl = (repository: Repository, branch: string): string =>
+  `${hostUrl}/${repository.user}/${repository.name}/${branch}/`;
 const getFullImagePath = (basePath: string, imagePath: string): string =>
   convertPathToPosix(path.normalize(path.join(basePath, imagePath)));
 
-export function updateRelativeImageUrls(article: Article, repository: Repository): Article {
+export function updateRelativeImageUrls(article: Article, repository: Repository, branch: string): Article {
   const data = { ...article.data };
   let { content } = article;
   const basePath = path.dirname(article.file!);
@@ -25,14 +26,14 @@ export function updateRelativeImageUrls(article: Article, repository: Repository
 
     if (imagePath) {
       const fullPath = getFullImagePath(basePath, imagePath);
-      const newLink = `![${alt}](${getResourceUrl(repository)}${fullPath}${title})`;
+      const newLink = `![${alt}](${getResourceUrl(repository, branch)}${fullPath}${title})`;
       content = content.replace(link, newLink);
     }
   }
 
   if (data.cover_image && !isUrl(data.cover_image)) {
     const fullPath = getFullImagePath(basePath, data.cover_image);
-    data.cover_image = `${getResourceUrl(repository)}${fullPath}`;
+    data.cover_image = `${getResourceUrl(repository, branch)}${fullPath}`;
   }
 
   return { ...article, content, data };
@@ -90,6 +91,7 @@ export async function prompt(question: string): Promise<string> {
 
 export async function replaceInFile(file: string, stringToReplace: string, replacement: string) {
   const content = await fs.readFile(file, 'utf-8');
-  const newContent = content.replace(stringToReplace, replacement);
+  const toReplaceRegExp = new RegExp(stringToReplace, 'g');
+  const newContent = content.replace(toReplaceRegExp, replacement);
   await fs.writeFile(file, newContent);
 }

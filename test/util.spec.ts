@@ -37,7 +37,7 @@ describe('utilities', () => {
           ![](./image.gif "with title")
           ![](http://site.com/image.jpg)`
       };
-      const updatedArticle = updateRelativeImageUrls(article, repository);
+      const updatedArticle = updateRelativeImageUrls(article, repository, 'master');
       expect(updatedArticle.content).toMatchInlineSnapshot(`
         "
                   ![blurb](https://raw.githubusercontent.com/me/repo/master/local/image.jpg)
@@ -53,9 +53,9 @@ describe('utilities', () => {
         data: { cover_image: './local.jpg' },
         content: ''
       };
-      const updatedArticle = updateRelativeImageUrls(article, repository);
+      const updatedArticle = updateRelativeImageUrls(article, repository, 'main');
       expect(updatedArticle.data).toEqual({
-        cover_image: 'https://raw.githubusercontent.com/me/repo/master/local.jpg'
+        cover_image: 'https://raw.githubusercontent.com/me/repo/main/local.jpg'
       });
     });
 
@@ -65,7 +65,7 @@ describe('utilities', () => {
         data: { cover_image: 'https://distant.jpg' },
         content: ''
       };
-      const updatedArticle = updateRelativeImageUrls(article, repository);
+      const updatedArticle = updateRelativeImageUrls(article, repository, 'master');
       expect(updatedArticle.data).toEqual({ cover_image: 'https://distant.jpg' });
     });
   });
@@ -111,6 +111,14 @@ describe('utilities', () => {
       await replaceInFile('dummy.md', 'ipsum', 'replaced');
 
       expect(fs.writeFile).toHaveBeenCalledWith('dummy.md', 'Lorem replaced dolor sit amet');
+    });
+
+    it('should replace multiple string occurences in file', async () => {
+      const fs: any = (await import('fs-extra')).default;
+      fs.readFile.mockImplementation(async () => 'Lorem ipsum dolor sit amet ipsum bis');
+      await replaceInFile('dummy.md', 'ipsum', 'replaced');
+
+      expect(fs.writeFile).toHaveBeenCalledWith('dummy.md', 'Lorem replaced dolor sit amet replaced bis');
     });
   });
 });

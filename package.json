@@ -103,6 +103,7 @@
       "@typescript-eslint/no-unsafe-call": "off",
       "@typescript-eslint/ban-types": "off",
       "@typescript-eslint/naming-convention": "off",
+      "@typescript-eslint/prefer-nullish-coalescing": "off",
       "unicorn/prefer-node-protocol": "off",
       "unicorn/no-array-callback-reference": "off",
       "camelcase": [
@@ -164,7 +165,7 @@
   },
   "release": {
     "extends": "semantic-release-npm-github",
-    "branch": "master"
+    "branch": "main"
   },
   "engines__": {
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0",

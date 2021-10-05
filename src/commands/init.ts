@@ -18,7 +18,8 @@ import {
   parseRepository,
   getShorthandString,
   hasGitInstalled,
-  initGitRepository
+  initGitRepository,
+  getBranch
 } from '../repo.js';
 import { createSpinner } from '../spinner.js';
 import { Article } from '../models.js';
@@ -30,10 +31,11 @@ interface InitOptions {
   pull: boolean;
   devtoKey: string;
   repo: string;
+  branch: string;
   skipGit: boolean;
 }
 
-async function createGitHubAction(repoString?: string) {
+async function createGitHubAction(repoString?: string, repoBranch?: string) {
   let repo = getRepositoryFromStringOrEnv(repoString);
   while (!repo) {
     // eslint-disable-next-line no-await-in-loop
@@ -41,8 +43,15 @@ async function createGitHubAction(repoString?: string) {
     repo = parseRepository(string);
   }
 
+  let branch = await getBranch(repoBranch);
+  if (!branch) {
+    const string = await prompt(chalk`{green >} Enter the target branch: {grey (main)} `);
+    branch = string?.trim() || 'main';
+  }
+
   await fs.copy(path.join(__dirname, '../../template/.github'), '.github');
   await replaceInFile('.github/workflows/publish.yml', 'USERNAME/REPO', getShorthandString(repo));
+  await replaceInFile('.github/workflows/publish.yml', 'BRANCH', branch);
 }
 
 async function importArticlesFromDevTo(devtoKey: string) {
@@ -77,7 +86,8 @@ export async function init(options?: Partial<InitOptions>) {
   const spinner = createSpinner(debug);
 
   try {
-    await createGitHubAction(options.repo);
+    // TODO: check for existing repo/branch
+    await createGitHubAction(options.repo, options.branch);
 
     if (options.pull) {
       spinner.text = 'Retrieving articles from dev.to…';

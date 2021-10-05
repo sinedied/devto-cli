@@ -35,23 +35,24 @@ If you only want to synchronize a GitHub repository with dev.to, you can follow 
 Usage: devto <init|new|push|stats> [options]
 
 Commands:
-  i, init            Init current dir as an article repository
-    -p, --pull       Pull all your articles from dev.to
-    -s, --skip-git   Skip git repository init
-  n, new <file>      Create new article
-  p, push [files]    Push articles to dev.to [default: posts/**/*.md]
-    -d, --dry-run    Run without making actual changes on dev.to
-    -e, --reconcile  Reconcile articles without id using their title
-  s, stats           Display stats for your latest published articles
-    -n, --number <n> Number of articles to list stats for [default: 10]
-    -j, --json       Format result as JSON
+  i, init               Init current dir as an article repository
+    -p, --pull          Pull your articles from dev.to
+    -s, --skip-git      Skip git repository init
+  n, new <file>         Create new article
+  p, push [files]       Push articles to dev.to [default: posts/**/*.md]
+    -d, --dry-run       Do not make actual changes on dev.to
+    -e, --reconcile     Reconcile articles without id using their title
+  s, stats              Display stats for your latest published articles
+    -n, --number <n>    Number of articles to list stats for [default: 10]
+    -j, --json          Format result as JSON
 
 General options:
-  -t, --token <token> Use this dev.to API token
-  -r, --repo <repo>   GitHub repository (in "user/repo" form)
-  -v, --version       Show version
-  --verbose           Show detailed logs
-  --help              Show this help
+  -t, --token <token>   Use this dev.to API token
+  -r, --repo <repo>     GitHub repository (in "user/repo" form)
+  -b, --branch <branch> GitHub branch [default: master]
+  -v, --version         Show version
+  --verbose             Show detailed logs
+  --help                Show this help
 ```
 
 ### Init
@@ -60,7 +61,7 @@ General options:
 
 It does 3 things:
 
-1. Setup a [GitHub Actions workflow](https://github.com/sinedied/publish-devto) to automatically push your updates to dev.to each time a new commit is added to the `master` branch.
+1. Setup a [GitHub Actions workflow](https://github.com/sinedied/publish-devto) to automatically push your updates to dev.to each time a new commit is added to the `main` branch.
 
 2. Create a `posts` folder with a first article
 
@@ -86,7 +87,7 @@ When an article is pushed with `published: true`, a new property `date` will be 
 
 You can add image files in your repository along your markdown and link to them directly. 
 
-When an article is pushed to dev.to, all **relative** images links (without an `http(s)://` prefix) will be modified with the format `https://raw.githubusercontent.com/<USER>/<REPO_NAME>/master/` prefix to leverage GitHub hosting. You have make sure that you pushed your git changes including the images to your GitHub repository, otherwise you might end up with `404` errors. By default the CLI will [check]((#check-for-offline-images)) that all your linked images are online before pushing to avoid mistakes.
+When an article is pushed to dev.to, all **relative** images links (without an `http(s)://` prefix) will be modified with the format `https://raw.githubusercontent.com/<USER>/<REPO_NAME>/<BRANCH>/` prefix to leverage GitHub hosting. You have make sure that you pushed your git changes including the images to your GitHub repository, otherwise you might end up with `404` errors. By default the CLI will [check]((#check-for-offline-images)) that all your linked images are online before pushing to avoid mistakes.
 
 All absolute image links will be left untouched, so you can choose to host your images elsewhere if you prefer.
 
@@ -126,21 +127,25 @@ Most commands require a [dev.to API key](https://docs.dev.to/api/#section/Authen
 
 #### Dev.to token
 
-First, if you don't have a dev.to API key you have to generate one following [this procedure](https://docs.dev.to/api/#section/Authentication/api_key).
+First, if you don't have a dev.to API key you have to generate one following [this procedure](https://developers.forem.com/api/#section/Authentication/api_key).
 
 You can either use the `--token` to provide the token to CLI commands, or set the `DEVTO_TOKEN` environment variable.
 
 As an alternative, you can also create a `.env` file at the root of your articles repository and add `DEVTO_TOKEN=<YOUR_TOKEN>` in it. BE SURE TO AVOID COMMITTING THAT FILE TO GITHUB, otherwise your token will be exposed.
 
-#### GitHub repository URL
+#### GitHub repository URL and branch
 
-In order to [host your images using GitHub](#images-hosting) the tool needs to know your GitHub repository URL.
+In order to [host your images using GitHub](#images-hosting) the tool needs to know your GitHub repository URL and branch.
 
 If your git repository is initialized and you have the `origin` remote set to your GitHub repository it will be auto-detected and you have nothing to do.
 
 Otherwise, you can either use the `--repo` option to provide your GitHub repository in the form `<USER>/<REPO_NAME>`, or set the `DEVTO_REPO` environment variable.
 
 You can also create a `.env` file at the root of your repository and add `DEVTO_REPO=<USER>/<REPO_NAME>` in it.
+
+By default, the tool will try to detect the branch from which it was run and use it. If you want to use a different branch, you can use the `--branch` option to specify it, or set the `DEVTO_BRANCH` environment variable.
+
+You can also add `DEVTO_REPO=<BRANCH>` in a `.env` file at the root of your repository.
 
 ## Create a new GitHub repository synchronized with dev.to
 

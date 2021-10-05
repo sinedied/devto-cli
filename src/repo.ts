@@ -49,9 +49,9 @@ export async function getRepositoryFromPackage(searchUp?: boolean): Promise<Repo
 
   try {
     const pkg: any = await fs.readJson(pkgPath);
-    const repository = parseRepository(pkg.repository?.url ?? pkg.repository);
+    const repository = parseRepository(pkg.repository?.url || pkg.repository);
     debug(
-      repository ? 'Repository found in package.json: ' : 'No repository found in package.json',
+      repository ? 'Repository found in package.json:' : 'No repository found in package.json',
       repository ? getShorthandString(repository) : ''
     );
     return repository;
@@ -71,7 +71,7 @@ export async function getRepositoryFromGit(): Promise<Repository | null> {
     const { stdout } = await execa('git', ['remote', 'get-url', 'origin']);
     const repository = parseRepository(stdout);
     debug(
-      repository ? 'Repository found in git origin: ' : 'No repository found in git origin',
+      repository ? 'Repository found in git origin:' : 'No repository found in git origin',
       repository ? getShorthandString(repository) : ''
     );
     return repository;
@@ -95,7 +95,32 @@ export async function initGitRepository() {
   try {
     await execa('git', ['init']);
     debug('Git repository initialized');
+    // TODO: set git main branch if not already inited
   } catch (error) {
     debug(`Git error: ${String(error as Error)}`);
   }
+}
+
+export async function getCurrentBranchFromGit(): Promise<string | null> {
+  if (!(await hasGitInstalled())) {
+    debug('Git binary not found');
+    return null;
+  }
+
+  try {
+    const { stdout } = await execa('git', ['rev-parse', '--abbrev-ref', 'HEAD']);
+    return stdout.trim();
+  } catch (error) {
+    debug(`Git error: ${String(error as Error)}`);
+    return null;
+  }
+}
+
+export function getBranchFromStringOrEnv(string?: string): string | null {
+  const branch = string || process.env.DEVTO_BRANCH;
+  return branch?.trim() || null;
+}
+
+export async function getBranch(string?: string): Promise<string | null> {
+  return getBranchFromStringOrEnv(string) ?? getCurrentBranchFromGit();
 }
