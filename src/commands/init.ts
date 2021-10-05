@@ -14,12 +14,13 @@ import {
 import { getAllArticles } from '../api.js';
 import { prompt, replaceInFile } from '../util.js';
 import {
-  getRepositoryFromStringOrEnv,
   parseRepository,
   getShorthandString,
   hasGitInstalled,
   initGitRepository,
-  getBranch
+  getBranch,
+  getRepository,
+  isGitRepository
 } from '../repo.js';
 import { createSpinner } from '../spinner.js';
 import { Article } from '../models.js';
@@ -36,7 +37,7 @@ interface InitOptions {
 }
 
 async function createGitHubAction(repoString?: string, repoBranch?: string) {
-  let repo = getRepositoryFromStringOrEnv(repoString);
+  let repo = await getRepository(repoString, false);
   while (!repo) {
     // eslint-disable-next-line no-await-in-loop
     const string = await prompt(chalk`{green >} Enter your GitHub repository: {grey (username/repository)} `);
@@ -86,7 +87,6 @@ export async function init(options?: Partial<InitOptions>) {
   const spinner = createSpinner(debug);
 
   try {
-    // TODO: check for existing repo/branch
     await createGitHubAction(options.repo, options.branch);
 
     if (options.pull) {
@@ -104,9 +104,13 @@ export async function init(options?: Partial<InitOptions>) {
 
     if (!options.skipGit) {
       if (await hasGitInstalled()) {
-        await initGitRepository();
+        if (await isGitRepository()) {
+          console.warn(chalk`{yellow Git repository already initialized.}`);
+        } else {
+          await initGitRepository();
+        }
       } else {
-        console.warn(chalk`{yellow Cannot init git repository, git binary not found}`);
+        console.warn(chalk`{yellow Cannot init git repository, git binary not found.}`);
       }
     }
 
