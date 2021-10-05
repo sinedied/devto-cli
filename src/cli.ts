@@ -11,17 +11,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const help = `Usage: devto <init|new|push|stats> [options]
 
 Commands:
-  i, init            Init current dir as an article repository
-    -p, --pull       Pull your articles from dev.to
-    -s, --skip-git   Skip git repository init
-  n, new <file>      Create new article
-  p, push [files]    Push articles to dev.to [default: posts/**/*.md]
-    -d, --dry-run    Do not make actual changes on dev.to
-    -c, --no-check   Do not check images links to be online before pushing
-    -e, --reconcile  Reconcile articles without id using their title
-  s, stats           Display stats for your latest published articles
-    -n, --number <n> Number of articles to list stats for [default: 10]
-    -j, --json       Format result as JSON
+  p, push [files]       Push articles to dev.to [default: posts/**/*.md]
+    -d, --dry-run       Do not make actual changes on dev.to
+    -e, --reconcile     Reconcile articles without id using their title
+  s, stats              Display stats for your latest published articles
+    -n, --number <n>    Number of articles to list stats for [default: 10]
+    -j, --json          Format result as JSON
 
 General options:
   -t, --token <token> Use this dev.to API token
