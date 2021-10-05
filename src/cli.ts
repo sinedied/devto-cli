@@ -8,7 +8,7 @@ import fs from 'fs-extra';
 import { init, createNew, push, showStats } from './commands/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const help = `Usage: devto <init|new|push|stats> [options]
+const help = `Usage: dev <init|new|push|stats> [options]
 
 Commands:
   i, init               Init current dir as an article repository
