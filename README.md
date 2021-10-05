@@ -121,9 +121,9 @@ Only the latest 10 are shown by default, but you can change that number using th
 
 You can also choose to get the resultats formatted as JSON using the `--json` options.
 
-### Configure dev.to token and GitHub repository URL
+### Configure dev.to token and GitHub repository URL and branch
 
-Most commands require a [dev.to API key](https://docs.dev.to/api/#section/Authentication/api_key) and a GitHub repository url to work properly.
+Most commands require a [dev.to API key](https://docs.dev.to/api/#section/Authentication/api_key) and a GitHub repository url and branch to work properly.
 
 #### Dev.to token
 
@@ -147,10 +147,6 @@ By default, the tool will try to detect the branch from which it was run and use
 
 You can also add `DEVTO_REPO=<BRANCH>` in a `.env` file at the root of your repository.
 
-## Create a new GitHub repository synchronized with dev.to
-
-TODO + template repo
-
 ## Using frontmatter properties
 
 Any markdown file matching the specified input pattern and containing at least a `title` frontmatter property will be considered as an article and synchronized with dev.to.
@@ -161,6 +157,36 @@ In addition, these frontmatter properties specified to the CLI are used to confi
 - `id`: The article ID on dev.to. If not specified, a new article will be created on publish.
 - `date`: The publication date of the article. If not specified, the current date will be used on publish.
 - `devto_sync`: If set to `false`, the article will not be synchronized with dev.to at all.
+
+## Create a new GitHub repository synchronized with dev.to
+
+The easiest way to get started is to:
+
+1. Create a new GitHub repository using [this template](https://github.com/sinedied/devto-github-template/generate)
+
+1. Go to https://developers.forem.com/api/#section/Authentication/api_key and follow the **Getting an API key** instructions to generate your own dev.to API key.
+
+1. Select the **Settings** tab on your GitHub repository, then go to the **Secrets** section.
+
+1. Add a secret called **DEVTO_TOKEN** with the value of your dev.to API key.
+
+Now your articles are ready to be published on dev.to! 🎉
+
+### Starting from scratch
+
+Alternatively, instead of using the template, you can start from scratch with the CLI.
+
+1. Create a new folder on your machine, the use the `dev init` command to initialize the files.
+
+1. Commit the changes: `git add . && git commit -m "feat: add dev.to workflow"`
+
+1. Create a new repository on GitHub, and follow the instructions to push an existing repository, that was created by `dev init`.
+
+1. Go to https://developers.forem.com/api/#section/Authentication/api_key and follow the **Getting an API key** instructions to generate your own dev.to API key.
+
+1. Select the **Settings** tab on your GitHub repository, then go to the **Secrets** section.
+
+1. Add a secret called **DEVTO_TOKEN** with the value of your dev.to API key.
 
 ## Related
 
