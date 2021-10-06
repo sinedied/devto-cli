@@ -185,7 +185,7 @@ export async function createNewArticle(file: string) {
   await saveArticleToFile(article);
 }
 
-export async function checkArticleForOfflineImages(article: Article): Promise<boolean> {
+export async function checkArticleForOfflineImages(article: Article): Promise<string | null> {
   try {
     const urls = getImageUrls(article);
     debug('Found %s image(s) to check for "%s"', urls.length, article.data.title);
@@ -193,18 +193,18 @@ export async function checkArticleForOfflineImages(article: Article): Promise<bo
     const checkUrl = async (url: string) => {
       debug('Checking image "%s"…', url);
       await got(url);
-      return false;
+      return null;
     };
 
     await pMap(urls, checkUrl, { concurrency: 5 });
-    return false;
+    return null;
   } catch (error) {
     if (error instanceof RequestError && error.response) {
       debug('Image "%s" appears to be offline', error.response.requestUrl);
-    } else {
-      debug('Error while checking image: %s', String(error));
+      return error.response.requestUrl;
     }
 
-    return true;
+    debug('Error while checking image: %s', String(error));
+    return String(error);
   }
 }

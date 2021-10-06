@@ -34,9 +34,20 @@ export interface PushResult {
   article: Article;
   status: string;
   publishedStatus: string;
+  errors?: string[];
 }
 
-function showResults(results: PushResult[]) {
+function showErrors(results: PushResult[]) {
+  const errors = results.filter((result) => result.errors);
+  for (const result of errors) {
+    console.error(chalk`{red {bold ${result.article.file!}} has error(s):}`);
+    for (const error of result.errors!) {
+      console.error(chalk`{red - ${error}}`);
+    }
+  }
+}
+
+function showResultsTable(results: PushResult[]) {
   const rows = results.map((r) => [r.status, r.publishedStatus, r.article.data.title]);
   const usedWidth = 27; // Status columns + padding
   const availableWidth = process.stdout.columns || 80;
@@ -71,24 +82,27 @@ async function processArticles(
     const needsUpdate = checkIfArticleNeedsUpdate(remoteArticles, newArticle);
     let status = newArticle.hasChanged ? SyncStatus.reconciled : SyncStatus.upToDate;
     let updateResult = null;
+    const errors = [];
 
     if (needsUpdate) {
       try {
-        const hasOfflineImages = options.checkImages && (await checkArticleForOfflineImages(newArticle));
+        const offlineImage = options.checkImages && (await checkArticleForOfflineImages(newArticle));
 
-        if (!options.dryRun && !hasOfflineImages) {
+        if (!options.dryRun && !offlineImage) {
           updateResult = await updateRemoteArticle(newArticle, options.devtoKey!);
           newArticle = await updateLocalArticle(article, updateResult);
         }
 
-        if (hasOfflineImages) {
+        if (offlineImage) {
           status = SyncStatus.imageOffline;
+          errors.push(`Image ${offlineImage} is offline`);
         } else {
           status = newArticle.data.id ? SyncStatus.updated : SyncStatus.created;
         }
       } catch (error) {
         debug('Article update failed: %s', String(error));
         status = SyncStatus.failed;
+        errors.push(`Update failed: ${String(error)}`);
       }
     }
 
@@ -107,7 +121,8 @@ async function processArticles(
     return {
       article: newArticle,
       status,
-      publishedStatus: newArticle.data.published ? PublishedStatus.published : PublishedStatus.draft
+      publishedStatus: newArticle.data.published ? PublishedStatus.published : PublishedStatus.draft,
+      errors: errors.length > 0 ? errors : undefined
     };
   };
 
@@ -178,7 +193,8 @@ export async function push(files: string[], options?: Partial<PushOptions>): Pro
     const results = await processArticles(articles, remoteArticles, repository, branch, options);
 
     spinner.stop();
-    showResults(results);
+    showErrors(results);
+    showResultsTable(results);
 
     const outOfSync = results.some((r) => r.status === SyncStatus.outOfSync);
     if (outOfSync) {
