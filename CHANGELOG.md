@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/sinedied/devto-cli/compare/1.0.5...1.1.0) (2021-10-06)
+
+
+### Features
+
+* add detailed error display ([2a2056d](https://github.com/sinedied/devto-cli/commit/2a2056d82d114b39999427c35613a57c8402ecb8))
+
 ## [1.0.5](https://github.com/sinedied/devto-cli/compare/1.0.4...1.0.5) (2021-10-05)
 
 
