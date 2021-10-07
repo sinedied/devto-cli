@@ -27,7 +27,7 @@
 
 `npm install -g @sinedied/devto-cli`
 
-If you only want to synchronize a GitHub repository with dev.to, you can follow this [quickstart tutorial](#create-a-new-github-repository-synchronized-with-dev.to) without installing the CLI.
+If you only want to synchronize a GitHub repository with dev.to, you can follow this [quickstart tutorial](#create-a-new-github-repository-synchronized-with-devto) without installing the CLI.
 
 ## Usage
 
