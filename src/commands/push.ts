@@ -37,30 +37,31 @@ export interface PushResult {
   errors?: string[];
 }
 
-function showErrors(results: PushResult[]) {
+export function formatErrors(results: PushResult[]) {
   const errors = results.filter((result) => result.errors);
+  let output = '';
   for (const result of errors) {
-    console.error(chalk`{red {bold ${result.article.file!}} has error(s):}`);
+    output += chalk`{red {bold ${result.article.file!}} has error(s):}\n`;
     for (const error of result.errors!) {
-      console.error(chalk`{red - ${error}}`);
+      output += chalk`{red - ${error}}`;
     }
   }
+
+  return output;
 }
 
-function showResultsTable(results: PushResult[]) {
+export function formatResultsTable(results: PushResult[]) {
   const rows = results.map((r) => [r.status, r.publishedStatus, r.article.data.title]);
   const usedWidth = 27; // Status columns + padding
   const availableWidth = process.stdout.columns || 80;
   const maxTitleWidth = Math.max(availableWidth - usedWidth, 8);
 
-  console.info(
-    table(rows, {
-      drawHorizontalLine: () => false,
-      border: getBorderCharacters('void'),
-      columnDefault: { paddingLeft: 0, paddingRight: 1 },
-      columns: { 2: { truncate: maxTitleWidth, width: maxTitleWidth } }
-    }).slice(0, -1)
-  );
+  return table(rows, {
+    drawHorizontalLine: () => false,
+    border: getBorderCharacters('void'),
+    columnDefault: { paddingLeft: 0, paddingRight: 1 },
+    columns: { 2: { truncate: maxTitleWidth, width: maxTitleWidth } }
+  }).slice(0, -1);
 }
 
 async function getRemoteArticles(devtoKey: string): Promise<Article[]> {
@@ -193,8 +194,8 @@ export async function push(files: string[], options?: Partial<PushOptions>): Pro
     const results = await processArticles(articles, remoteArticles, repository, branch, options);
 
     spinner.stop();
-    showErrors(results);
-    showResultsTable(results);
+    console.error(formatErrors(results));
+    console.info(formatResultsTable(results));
 
     const outOfSync = results.some((r) => r.status === SyncStatus.outOfSync);
     if (outOfSync) {
