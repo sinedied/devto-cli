@@ -200,8 +200,9 @@ export async function checkArticleForOfflineImages(article: Article): Promise<st
     return null;
   } catch (error) {
     if (error instanceof RequestError && error.response) {
-      debug('Image "%s" appears to be offline', error.response.requestUrl);
-      return error.response.requestUrl;
+      const url = error.response.requestUrl.toString();
+      debug('Image "%s" appears to be offline', url);
+      return url;
     }
 
     debug('Error while checking image: %s', String(error));

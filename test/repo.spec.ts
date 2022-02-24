@@ -6,7 +6,7 @@ import { jest } from '@jest/globals';
 
 jest.unstable_mockModule('execa', () => ({
   __esModule: true,
-  default: jest.fn()
+  execa: jest.fn()
 }));
 jest.unstable_mockModule('hasbin', () => ({
   __esModule: true,
@@ -99,7 +99,7 @@ describe('repository methods', () => {
 
     it('should return null if git returned an error', async () => {
       const hasbin: any = (await import('hasbin')).default;
-      const execa: any = (await import('execa')).default;
+      const execa: any = (await import('execa')).execa;
       hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(() => {
         throw new Error('git error');
@@ -110,7 +110,7 @@ describe('repository methods', () => {
 
     it('should get repo from git', async () => {
       const hasbin: any = (await import('hasbin')).default;
-      const execa: any = (await import('execa')).default;
+      const execa: any = (await import('execa')).execa;
       hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(async () => ({ stdout: 'git@github.com:user/repo.git' }));
 
@@ -159,7 +159,7 @@ describe('repository methods', () => {
 
     it('should get repo from git', async () => {
       const hasbin: any = (await import('hasbin')).default;
-      const execa: any = (await import('execa')).default;
+      const execa: any = (await import('execa')).execa;
       hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(async () => ({ stdout: 'git@github.com:user/repo.git' }));
 
@@ -193,7 +193,7 @@ describe('repository methods', () => {
 
     it('should return null if git returned an error', async () => {
       const hasbin: any = (await import('hasbin')).default;
-      const execa: any = (await import('execa')).default;
+      const execa: any = (await import('execa')).execa;
       hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(() => {
         throw new Error('git error');
@@ -204,7 +204,7 @@ describe('repository methods', () => {
 
     it('should get current branch from git', async () => {
       const hasbin: any = (await import('hasbin')).default;
-      const execa: any = (await import('execa')).default;
+      const execa: any = (await import('execa')).execa;
       hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(async () => ({ stdout: 'main' }));
 
@@ -254,7 +254,7 @@ describe('repository methods', () => {
 
     it('should get branch from git', async () => {
       const hasbin: any = (await import('hasbin')).default;
-      const execa: any = (await import('execa')).default;
+      const execa: any = (await import('execa')).execa;
       hasbin.mockImplementation(mockHasbin(true));
       execa.mockImplementation(async () => ({ stdout: 'toto' }));
 

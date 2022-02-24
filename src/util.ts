@@ -80,7 +80,6 @@ export function scaleNumber(number: number, maxLength = 5): string {
 
 export async function prompt(question: string): Promise<string> {
   const read = createInterface({ input: process.stdin, output: process.stdout });
-  // eslint-disable-next-line promise/param-names
   return new Promise((resolve, _) => {
     read.question(question, (answer) => {
       read.close();
