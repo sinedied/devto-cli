@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/sinedied/devto-cli/compare/1.1.0...1.2.0) (2022-02-24)
+
+
+### Features
+
+* export formatting functions in push command ([5c4fe17](https://github.com/sinedied/devto-cli/commit/5c4fe17820c14634244dd53d94a4cfd9ee0a99f3))
+
 # [1.1.0](https://github.com/sinedied/devto-cli/compare/1.0.5...1.1.0) (2021-10-06)
 
 
