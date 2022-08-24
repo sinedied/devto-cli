@@ -41,9 +41,9 @@ export function formatErrors(results: PushResult[]) {
   const errors = results.filter((result) => result.errors);
   let output = '';
   for (const result of errors) {
-    output += chalk`{red {bold ${result.article.file!}} has error(s):}\n`;
+    output += chalk.red(`${chalk.bold(result.article.file!)} has error(s):\n`);
     for (const error of result.errors!) {
-      output += chalk`{red - ${error}}`;
+      output += chalk.red(`- ${error}\n`);
     }
   }
 
@@ -139,13 +139,15 @@ export async function push(files: string[], options?: Partial<PushOptions>): Pro
   if (!options.devtoKey) {
     process.exitCode = -1;
     console.error(
-      chalk`{red No dev.to API key provided.}\nUse {bold --token} option or {bold .env} file to provide one.`
+      `${chalk.red(`No dev.to API key provided.`)}\nUse ${chalk.bold(`--token`)} option or ${chalk.bold(
+        `.env`
+      )} file to provide one.`
     );
     return null;
   }
 
   if (options.dryRun) {
-    console.warn(chalk`{yellow Running in dry run mode, local and remote changes will be skipped}`);
+    console.warn(chalk.yellow(`Running in dry run mode, local and remote changes will be skipped`));
   }
 
   const spinner = createSpinner(debug);
@@ -155,7 +157,9 @@ export async function push(files: string[], options?: Partial<PushOptions>): Pro
     if (!repository) {
       process.exitCode = -1;
       console.error(
-        chalk`{red No GitHub repository provided.}\nUse {bold --repo} option or {bold .env} file to provide one.`
+        `${chalk.red(`No GitHub repository provided.`)}\nUse ${chalk.bold(`--repo`)} option or ${chalk.bold(
+          `.env`
+        )} file to provide one.`
       );
       return null;
     }
@@ -166,7 +170,9 @@ export async function push(files: string[], options?: Partial<PushOptions>): Pro
     if (!branch) {
       process.exitCode = -1;
       console.error(
-        chalk`{red No GitHub branch provided.}\nUse {bold --branch} option or {bold .env} file to provide one.`
+        `${chalk.red(`No GitHub branch provided.`)}\nUse ${chalk.bold(`--branch`)} option or ${chalk.bold(
+          `.env`
+        )} file to provide one.`
       );
       return null;
     }
@@ -174,10 +180,10 @@ export async function push(files: string[], options?: Partial<PushOptions>): Pro
     debug('branch: %s', branch);
 
     let articles = await getArticlesFromFiles(files);
-    console.info(chalk`Found {green ${articles.length}} article(s)`);
+    console.info(`Found ${chalk.green(articles.length)} article(s)`);
 
     if (articles.length === 0) {
-      console.warn(chalk`No articles to push.`);
+      console.warn(`No articles to push.`);
       return [];
     }
 
@@ -199,7 +205,9 @@ export async function push(files: string[], options?: Partial<PushOptions>): Pro
 
     const outOfSync = results.some((r) => r.status === SyncStatus.outOfSync);
     if (outOfSync) {
-      console.info(chalk`{yellow Some local files are out of sync. Retry pushing with {bold --reconcile} option.}`);
+      console.info(
+        chalk.yellow(`Some local files are out of sync. Retry pushing with ${chalk.bold(`--reconcile`)} option.`)
+      );
     }
 
     const failed = results.some((r) => r.status === SyncStatus.failed || r.status === SyncStatus.imageOffline);
@@ -211,7 +219,7 @@ export async function push(files: string[], options?: Partial<PushOptions>): Pro
   } catch (error) {
     spinner.stop();
     process.exitCode = -1;
-    console.error(chalk`{red Error: ${(error as Error).message}}`);
+    console.error(chalk.red(`Error: ${(error as Error).message}`));
     console.error('Push failed');
     return null;
   }

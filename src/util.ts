@@ -89,7 +89,7 @@ export async function prompt(question: string): Promise<string> {
 }
 
 export async function replaceInFile(file: string, stringToReplace: string, replacement: string) {
-  const content = await fs.readFile(file, 'utf-8');
+  const content = await fs.readFile(file, 'utf8');
   const toReplaceRegExp = new RegExp(stringToReplace, 'g');
   const newContent = content.replace(toReplaceRegExp, replacement);
   await fs.writeFile(file, newContent);

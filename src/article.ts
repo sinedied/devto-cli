@@ -19,7 +19,7 @@ export async function getArticlesFromFiles(filesGlob: string[]): Promise<Article
 }
 
 async function getArticleFromFile(file: string): Promise<Article | null> {
-  const content = await fs.readFile(file, 'utf-8');
+  const content = await fs.readFile(file, 'utf8');
   const article = matter(content, { language: 'yaml' });
 
   // An article must have a least a title property and sync should not be disabled

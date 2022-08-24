@@ -40,13 +40,15 @@ async function createGitHubAction(repoString?: string, repoBranch?: string) {
   let repo = await getRepository(repoString, false);
   while (!repo) {
     // eslint-disable-next-line no-await-in-loop
-    const string = await prompt(chalk`{green >} Enter your GitHub repository: {grey (username/repository)} `);
+    const string = await prompt(
+      `${chalk.green(`>`)} Enter your GitHub repository: ${chalk.grey(`(username/repository)`)} `
+    );
     repo = parseRepository(string);
   }
 
   let branch = await getBranch(repoBranch);
   if (!branch) {
-    const string = await prompt(chalk`{green >} Enter the target branch: {grey (main)} `);
+    const string = await prompt(`${chalk.green(`>`)} Enter the target branch: ${chalk.grey(`(main)`)} `);
     branch = string?.trim() || 'main';
   }
 
@@ -61,7 +63,7 @@ async function importArticlesFromDevTo(devtoKey: string) {
 
   const remoteArticles = getArticlesFromRemoteData(remoteData);
 
-  console.info(chalk`Found {green ${remoteArticles.length}} article(s) to import.`);
+  console.info(`Found ${chalk.green(remoteArticles.length)} article(s) to import.`);
 
   const processArticle = async (article: Article) => {
     const newArticle = generateArticleFilename(article);
@@ -79,7 +81,9 @@ export async function init(options?: Partial<InitOptions>) {
   if (options.pull && !options.devtoKey) {
     process.exitCode = -1;
     console.error(
-      chalk`{red No dev.to API key provided.}\nUse {bold --token} option or {bold .env} file to provide one.`
+      `${chalk.red(`No dev.to API key provided.`)}\nUse ${chalk.bold(`--token`)} option or ${chalk.bold(
+        `.env`
+      )} file to provide one.`
     );
     return;
   }
@@ -99,27 +103,27 @@ export async function init(options?: Partial<InitOptions>) {
     const articlesFolderExists = await fs.pathExists(defaultArticlesFolder);
     if (!articlesFolderExists) {
       await createNewArticle(path.join(defaultArticlesFolder, 'article.md'));
-      console.info(chalk`Created your first article draft in {green posts/article.md}!`);
+      console.info(`Created your first article draft in ${chalk.green(`posts/article.md`)}!`);
     }
 
     if (!options.skipGit) {
       if (await hasGitInstalled()) {
         if (await isGitRepository()) {
-          console.warn(chalk`{yellow Git repository already initialized.}`);
+          console.warn(chalk.yellow(`Git repository already initialized.`));
         } else {
           await initGitRepository();
         }
       } else {
-        console.warn(chalk`{yellow Cannot init git repository, git binary not found.}`);
+        console.warn(chalk.yellow(`Cannot init git repository, git binary not found.`));
       }
     }
 
     console.info('Init done.');
-    console.info(chalk`Take a look at {green .github/workflows/publish.yml} for next steps.`);
+    console.info(`Take a look at ${chalk.green(`.github/workflows/publish.yml`)} for next steps.`);
   } catch (error) {
     spinner.stop();
     process.exitCode = -1;
-    console.error(chalk`{red Error: ${(error as Error).message}}`);
+    console.error(chalk.red(`Error: ${(error as Error).message}`));
     console.error('Init failed.');
   }
 }

@@ -22,7 +22,9 @@ export async function showStats(options?: Partial<ShowStatsOptions>) {
   if (!options.devtoKey) {
     process.exitCode = -1;
     console.error(
-      chalk`{red No dev.to API key provided.}\nUse {bold --token} option or {bold .env} file to provide one.`
+      `${chalk.red(`No dev.to API key provided.`)}\nUse ${chalk.bold(`--token`)} option or ${chalk.bold(
+        `.env`
+      )} file to provide one.`
     );
     return;
   }
@@ -66,6 +68,6 @@ export async function showStats(options?: Partial<ShowStatsOptions>) {
   } catch (error) {
     spinner.stop();
     process.exitCode = -1;
-    console.error(chalk`{red Error while showing stats: ${(error as Error).message}}`);
+    console.error(chalk.red(`Error while showing stats: ${(error as Error).message}`));
   }
 }
