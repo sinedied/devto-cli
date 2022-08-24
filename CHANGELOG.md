@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/sinedied/devto-cli/compare/1.2.0...1.2.1) (2022-08-24)
+
+
+### Bug Fixes
+
+* update dependencies ([1c0d4fc](https://github.com/sinedied/devto-cli/commit/1c0d4fc97d840ac1ec433ad3944b12adb90a6c76))
+
 # [1.2.0](https://github.com/sinedied/devto-cli/compare/1.1.0...1.2.0) (2022-02-24)
 
 
