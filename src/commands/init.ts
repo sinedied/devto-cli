@@ -111,7 +111,7 @@ export async function init(options?: Partial<InitOptions>) {
         if (await isGitRepository()) {
           console.warn(chalk.yellow(`Git repository already initialized.`));
         } else {
-          await initGitRepository();
+          await initGitRepository(options.branch);
         }
       } else {
         console.warn(chalk.yellow(`Cannot init git repository, git binary not found.`));

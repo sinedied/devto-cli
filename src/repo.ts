@@ -95,17 +95,18 @@ export async function isGitRepository() {
   return (await hasGitInstalled()) && fs.pathExists('.git');
 }
 
-export async function initGitRepository() {
+export async function initGitRepository(branch?: string) {
+  branch = branch?.trim() || 'main';
   try {
     await execa('git', ['init']);
     debug('Git repository initialized');
 
     const currentBranch = await getCurrentBranchFromGit();
-    if (currentBranch !== 'main') {
+    if (currentBranch !== branch) {
       // Create starting point to allow branching
       await execa('git', ['commit', '--allow-empty', '-m', 'feat: initial commit']);
-      await execa('git', ['branch', '-M', 'main']);
-      debug('Git: renamed branch to "main"');
+      await execa('git', ['branch', '-M', branch]);
+      debug(`Git: renamed branch to "${branch}"`);
     }
   } catch (error) {
     debug(`Git error: ${String(error as Error)}`);
