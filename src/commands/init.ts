@@ -1,6 +1,6 @@
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import process from 'process';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import process from 'node:process';
 import Debug from 'debug';
 import chalk from 'chalk';
 import fs from 'fs-extra';

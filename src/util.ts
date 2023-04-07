@@ -1,6 +1,6 @@
-import path from 'path';
-import process from 'process';
-import { createInterface } from 'readline';
+import path from 'node:path';
+import process from 'node:process';
+import { createInterface } from 'node:readline';
 import fs from 'fs-extra';
 import { type Article, type Repository } from './models.js';
 

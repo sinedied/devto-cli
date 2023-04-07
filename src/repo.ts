@@ -1,4 +1,4 @@
-import process from 'process';
+import process from 'node:process';
 import Debug from 'debug';
 import fs from 'fs-extra';
 import { findUp } from 'find-up';

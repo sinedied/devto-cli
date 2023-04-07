@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import Debug from 'debug';
 import fs from 'fs-extra';
 import { globby } from 'globby';
@@ -114,7 +114,8 @@ export function generateArticleFilename(article: Article): Article {
     throw new Error('No title found');
   }
 
-  const name = slugify(article.data.title, { lower: true, strict: true });
+  // Slugify has a typing issue with latest versions of typescript
+  const name = (slugify as any)(article.data.title, { lower: true, strict: true }) as string;
   const file = path.join(defaultArticlesFolder, name + '.md');
   return { ...article, file };
 }

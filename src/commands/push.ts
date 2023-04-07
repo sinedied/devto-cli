@@ -1,4 +1,4 @@
-import process from 'process';
+import process from 'node:process';
 import Debug from 'debug';
 import chalk from 'chalk';
 import { table, getBorderCharacters } from 'table';

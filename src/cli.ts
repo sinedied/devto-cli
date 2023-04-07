@@ -1,6 +1,6 @@
-import process from 'process';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import process from 'node:process';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import debug from 'debug';
 import minimist from 'minimist';
 import dotenv from 'dotenv';
