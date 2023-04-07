@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/sinedied/devto-cli/compare/1.2.1...1.3.0) (2023-04-07)
+
+
+### Features
+
+* allow to set initial git branch with --branch (closes [#32](https://github.com/sinedied/devto-cli/issues/32)) ([812fd01](https://github.com/sinedied/devto-cli/commit/812fd019c0eaf898abb0ceece60539785a1db36e))
+
 ## [1.2.1](https://github.com/sinedied/devto-cli/compare/1.2.0...1.2.1) (2022-08-24)
 
 

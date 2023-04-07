@@ -1,6 +1,6 @@
 {
   "name": "@sinedied/devto-cli",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Dev.to authoring CLI to create and publish markdown files as articles, using assets hosted on GitHub.",
   "type": "module",
   "repository": {
