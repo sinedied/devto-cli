@@ -2,7 +2,7 @@ import path from 'path';
 import process from 'process';
 import { createInterface } from 'readline';
 import fs from 'fs-extra';
-import { Article, Repository } from './models.js';
+import { type Article, type Repository } from './models.js';
 
 const hostUrl = 'https://raw.githubusercontent.com';
 const relativeImageRegex = /!\[(.*)]\((?!.*?:\/\/)([^ ]*?) *?( (?:'.*'|".*"))? *?\)/g;

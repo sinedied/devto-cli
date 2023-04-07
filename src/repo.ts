@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import { findUp } from 'find-up';
 import hasbin from 'hasbin';
 import { execa } from 'execa';
-import { Repository } from './models.js';
+import { type Repository } from './models.js';
 
 const debug = Debug('repo');
 const repositoryRegex = /.*[/:](.*)\/(.*)\.git|^([^/]*)\/([^/]*)$/;

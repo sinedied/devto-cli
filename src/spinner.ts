@@ -1,4 +1,4 @@
-import Debug, { Debugger } from 'debug';
+import Debug, { type Debugger } from 'debug';
 import ora from 'ora';
 
 const debug = Debug('spinner');

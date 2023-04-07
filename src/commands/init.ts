@@ -23,18 +23,18 @@ import {
   isGitRepository
 } from '../repo.js';
 import { createSpinner } from '../spinner.js';
-import { Article } from '../models.js';
+import { type Article } from '../models.js';
 
 const debug = Debug('init');
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-interface InitOptions {
+type InitOptions = {
   pull: boolean;
   devtoKey: string;
   repo: string;
   branch: string;
   skipGit: boolean;
-}
+};
 
 async function createGitHubAction(repoString?: string, repoBranch?: string) {
   let repo = await getRepository(repoString, false);

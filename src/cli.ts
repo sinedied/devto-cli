@@ -72,7 +72,7 @@ export async function run(args: string[]) {
   const [command, ...parameters] = options._;
   switch (command) {
     case 'i':
-    case 'init':
+    case 'init': {
       return init({
         devtoKey: options.token,
         repo: options.repo,
@@ -80,11 +80,15 @@ export async function run(args: string[]) {
         pull: options.pull,
         skipGit: options['skip-git']
       });
+    }
+
     case 'n':
-    case 'new':
+    case 'new': {
       return createNew(parameters[0]);
+    }
+
     case 'p':
-    case 'push':
+    case 'push': {
       return push(parameters, {
         devtoKey: options.token,
         repo: options.repo,
@@ -93,14 +97,19 @@ export async function run(args: string[]) {
         reconcile: options.reconcile,
         checkImages: !options['skip-check-images']
       });
+    }
+
     case 's':
-    case 'stats':
+    case 'stats': {
       return showStats({
         devtoKey: options.token,
         number: options.number,
         json: options.json
       });
-    default:
+    }
+
+    default: {
       console.log(help);
+    }
   }
 }

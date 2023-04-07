@@ -8,11 +8,11 @@ import { createSpinner } from '../spinner.js';
 
 const debug = Debug('init');
 
-interface ShowStatsOptions {
+type ShowStatsOptions = {
   devtoKey: string;
   number: number;
   json: boolean;
-}
+};
 
 export async function showStats(options?: Partial<ShowStatsOptions>) {
   options = options ?? {};

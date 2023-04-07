@@ -17,25 +17,25 @@ import { getAllArticles, updateRemoteArticle } from '../api.js';
 import { getBranch, getRepository } from '../repo.js';
 import { SyncStatus, PublishedStatus } from '../status.js';
 import { createSpinner } from '../spinner.js';
-import { Article, Repository } from '../models.js';
+import { type Article, type Repository } from '../models.js';
 
 const debug = Debug('push');
 
-export interface PushOptions {
+export type PushOptions = {
   devtoKey: string;
   repo: string;
   branch: string;
   dryRun: boolean;
   reconcile: boolean;
   checkImages: boolean;
-}
+};
 
-export interface PushResult {
+export type PushResult = {
   article: Article;
   status: string;
   publishedStatus: string;
   errors?: string[];
-}
+};
 
 export function formatErrors(results: PushResult[]) {
   const errors = results.filter((result) => result.errors);

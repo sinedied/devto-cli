@@ -7,7 +7,7 @@ import slugify from 'slugify';
 import got, { RequestError } from 'got';
 import pMap from 'p-map';
 import { updateRelativeImageUrls, getImageUrls } from './util.js';
-import { Article, ArticleMetadata, RemoteArticleData, Repository } from './models.js';
+import { type Article, type ArticleMetadata, type RemoteArticleData, type Repository } from './models.js';
 
 const debug = Debug('article');
 export const defaultArticlesFolder = 'posts';
@@ -110,7 +110,7 @@ export async function updateLocalArticle(article: Article, remoteData: RemoteArt
 }
 
 export function generateArticleFilename(article: Article): Article {
-  if (!article.data || !article.data.title) {
+  if (!article.data?.title) {
     throw new Error('No title found');
   }
 

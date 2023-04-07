@@ -1,8 +1,8 @@
 import Debug from 'debug';
-import got, { Got, RequestError } from 'got';
+import got, { type Got, RequestError } from 'got';
 import matter from 'gray-matter';
 import pThrottle from 'p-throttle';
-import { Article, RemoteArticleData, ArticleStats } from './models.js';
+import { type Article, type RemoteArticleData, type ArticleStats } from './models.js';
 
 const debug = Debug('devto');
 const apiUrl = 'https://dev.to/api';
@@ -17,7 +17,7 @@ export async function getAllArticles(devtoKey: string): Promise<RemoteArticleDat
   try {
     const articles = [];
     let page = 1;
-    const getPage = (page: number) =>
+    const getPage = async (page: number) =>
       got<RemoteArticleData[]>(`${apiUrl}/articles/me/all`, {
         searchParams: { per_page: paginationLimit, page },
         headers: { 'api-key': devtoKey },

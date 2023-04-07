@@ -10,15 +10,15 @@ export type ArticleMetadata = Partial<{
   date: string | null;
 }>;
 
-export interface Article {
+export type Article = {
   file: string | null;
   data: ArticleMetadata;
   content: string;
   hasChanged?: boolean;
-}
+};
 
 // This is a partial interface just enough for our needs
-export interface RemoteArticleData {
+export type RemoteArticleData = {
   id: number;
   title: string;
   description: string;
@@ -32,17 +32,17 @@ export interface RemoteArticleData {
   page_views_count: number;
   positive_reactions_count: number;
   comments_count: number;
-}
+};
 
-export interface ArticleStats {
+export type ArticleStats = {
   date: string;
   title: string;
   views: number;
   reactions: number;
   comments: number;
-}
+};
 
-export interface Repository {
+export type Repository = {
   user: string;
   name: string;
-}
+};
