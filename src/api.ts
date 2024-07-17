@@ -31,6 +31,7 @@ async function retryRequest(fn: () => Promise<RemoteArticleData>, retries: numbe
     if (retries === 0 || !(error instanceof RequestError && error.response?.statusCode === 429)) {
       throw error;
     }
+    debug('Rate limited, retrying in %s ms', retryDelay);
     await delay(retryDelay);
     return retryRequest(fn, retries - 1);
   }
@@ -96,7 +97,7 @@ export async function updateRemoteArticle(article: Article, devtoKey: string): P
     try {
       const markdown = matter.stringify(article, article.data, { lineWidth: -1 } as any);
       const { id } = article.data;
-      // Throttle API calls in case of article creation
+      // Throttle API calls in case of article creation or update
       const get = id ? throttledPutForUpdate : throttledPostForCreate;
       const result = await get(`${apiUrl}/articles${id ? `/${id}` : ''}`, {
         headers: { 'api-key': devtoKey },
