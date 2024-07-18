@@ -23,7 +23,7 @@
     "clean": "rm -rf lib *.tgz",
     "commit": "git-cz",
     "release:check": "semantic-release --dry-run",
-    "prepare": "husky install"
+    "prepare": "simple-git-hooks || echo 'simple-git-hooks install skipped'"
   },
   "keywords": [
     "cli",
@@ -73,11 +73,11 @@
     "@types/node": "^18.15.11",
     "@types/table": "^6.3.2",
     "cross-env": "^7.0.3",
-    "husky": "^8.0.1",
     "jest": "^29.5.0",
     "lint-staged": "^15.2.7",
     "semantic-release": "^24.0.0",
     "semantic-release-npm-github": "^5.0.0",
+    "simple-git-hooks": "^2.11.1",
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.3",
     "xo": "^0.54.0"
@@ -152,6 +152,9 @@
       "^(\\.{1,2}/.*)\\.js$": "$1"
     },
     "verbose": true
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
   },
   "lint-staged": {
     "*.js": [
