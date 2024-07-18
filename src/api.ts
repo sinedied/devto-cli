@@ -16,12 +16,14 @@ const retryDelay = 1000; // 1 second delay before retrying
 const throttledPostForCreate = pThrottle({ limit: 10, interval: 30_500 })(got.post) as any as Got['post'];
 
 // There's a limit of 30 requests each 30 seconds by the same user, so we need to throttle the API calls in that case too.
-const throttledPutForUpdate = pThrottle({ limit: 30, interval: 30_500 })(
-  async (url: string, options: any) => got.put(url, options)
+const throttledPutForUpdate = pThrottle({ limit: 30, interval: 30_500 })(async (url: string, options: any) =>
+  got.put(url, options)
 ) as any as Got['put'];
 
 async function delay(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
 
 async function retryRequest(fn: () => Promise<RemoteArticleData>, retries: number): Promise<RemoteArticleData> {
@@ -31,6 +33,7 @@ async function retryRequest(fn: () => Promise<RemoteArticleData>, retries: numbe
     if (retries === 0 || !(error instanceof RequestError && error.response?.statusCode === 429)) {
       throw error;
     }
+
     debug('Rate limited, retrying in %s ms', retryDelay);
     await delay(retryDelay);
     return retryRequest(fn, retries - 1);

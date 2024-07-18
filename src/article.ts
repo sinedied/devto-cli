@@ -15,7 +15,7 @@ export const defaultArticlesFolder = 'posts';
 export async function getArticlesFromFiles(filesGlob: string[]): Promise<Article[]> {
   const files: string[] = await globby(filesGlob);
   const articles = await Promise.all(files.map(getArticleFromFile));
-  return articles.filter((article) => article !== null) as Article[];
+  return articles.filter((article) => article !== null);
 }
 
 async function getArticleFromFile(file: string): Promise<Article | null> {
