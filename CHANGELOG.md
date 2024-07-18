@@ -1,3 +1,20 @@
+# [1.4.0](https://github.com/sinedied/devto-cli/compare/1.3.0...1.4.0) (2024-07-18)
+
+
+### chore
+
+* update packages ([a5b16b6](https://github.com/sinedied/devto-cli/commit/a5b16b6572b83b7254b6cbec1ab9b2cb7c7bc776))
+
+
+### Features
+
+* throttled Put request and add retry + delay ([f4e3a29](https://github.com/sinedied/devto-cli/commit/f4e3a29772226bce3d05e0afeae66bcc0c65104a))
+
+
+### BREAKING CHANGES
+
+* requires Node.js >= 18
+
 # [1.3.0](https://github.com/sinedied/devto-cli/compare/1.2.1...1.3.0) (2023-04-07)
 
 
