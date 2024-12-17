@@ -6,7 +6,7 @@ import matter from 'gray-matter';
 import slugify from 'slugify';
 import got, { RequestError } from 'got';
 import pMap from 'p-map';
-import { updateRelativeImageUrls, getImageUrls } from './util.js';
+import { updateRelativeImageUrls, getImageUrls, validateTags } from './util.js';
 import { type Article, type ArticleMetadata, type RemoteArticleData, type Repository } from './models.js';
 
 const debug = Debug('article');
@@ -37,11 +37,21 @@ export function getArticlesFromRemoteData(data: RemoteArticleData[]): Article[] 
 
 function generateFrontMatterMetadata(remoteData: RemoteArticleData): ArticleMetadata {
   const { data: frontmatter } = matter(remoteData.body_markdown);
+
+  const tags: string[] = [];
+  try {
+    validateTags(remoteData.tag_list.join(', '));
+  } catch (error) {
+    // Use type guard or type assertion
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Tags validation failed for article "${remoteData.title}": ${errorMessage}`);
+  }
+
   // Note: series info is missing here as it's not available through the dev.to API yet
   const metadata: ArticleMetadata = {
     title: frontmatter.title ? null : remoteData.title,
     description: frontmatter.description ? null : remoteData.description,
-    tags: frontmatter.tags ? null : remoteData.tag_list.join(', '),
+    tags: tags.join(', '),
     cover_image: frontmatter.cover_image ? null : remoteData.cover_image,
     canonical_url:
       frontmatter.canonical_url || remoteData.url === remoteData.canonical_url ? null : remoteData.canonical_url,

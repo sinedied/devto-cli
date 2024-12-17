@@ -94,3 +94,19 @@ export async function replaceInFile(file: string, stringToReplace: string, repla
   const newContent = content.replace(toReplaceRegExp, replacement);
   await fs.writeFile(file, newContent);
 }
+
+export function validateTags(tags: string): string[] {
+  const tagsArray = tags.split(',').map((tag) => tag.trim());
+  const MAX_TAGS = 4;
+  const INVALID_TAGS = tagsArray.filter((tag) => !/^[a-z\d-]+$/i.test(tag));
+
+  if (tagsArray.length > MAX_TAGS) {
+    throw new Error(`Too many tags. Max allowed: ${MAX_TAGS}`);
+  }
+
+  if (INVALID_TAGS.length > 0) {
+    throw new Error(`Invalid tags: ${INVALID_TAGS.join(', ')}`);
+  }
+
+  return tagsArray;
+}

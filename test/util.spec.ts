@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from "@jest/globals";
+import { validateTags } from "../src/util";
 
 jest.unstable_mockModule("fs-extra", () => ({
   __esModule: true,
@@ -119,6 +120,36 @@ describe("utilities", () => {
       await replaceInFile("dummy.md", "ipsum", "replaced");
 
       expect(fs.writeFile).toHaveBeenCalledWith("dummy.md", "Lorem replaced dolor sit amet replaced bis");
+    });
+  });
+
+  describe("validateTags", () => {
+    it("should return an array of valid tags", () => {
+      const tags = "terraform,devops,validation,practices";
+      const result = validateTags(tags);
+      expect(result).toEqual(["terraform", "devops", "validation", "practices"]);
+    });
+
+    it("should throw an error if tags exceed the maximum allowed", () => {
+      const tags = "tag1,tag2,tag3,tag4,tag5";
+      expect(() => validateTags(tags)).toThrow("Too many tags. Max allowed: 4");
+    });
+
+    it("should throw an error for invalid tags", () => {
+      const tags = "validTag1,invalid@tag,another-invalid-tag!";
+      expect(() => validateTags(tags)).toThrow("Invalid tags: invalid@tag, another-invalid-tag!");
+    });
+
+    it("should allow valid tags with mixed cases and numbers", () => {
+      const tags = "NodeJS,React2024,terraform,devops";
+      const result = validateTags(tags);
+      expect(result).toEqual(["NodeJS", "React2024", "terraform", "devops"]);
+    });
+
+    it("should trim whitespace around tags", () => {
+      const tags = " tag1 , tag2,tag3 ,  tag4 ";
+      const result = validateTags(tags);
+      expect(result).toEqual(["tag1", "tag2", "tag3", "tag4"]);
     });
   });
 });
